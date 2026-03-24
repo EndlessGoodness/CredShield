@@ -167,16 +167,16 @@ Public Class FormAdminDashboard
         End If
 
         For Each app In applications
-            dgvApplications.Rows.Add(New String() { _
-                app.ApplicationId, _
-                app.ConsumerName, _
-                app.Email, _
-                app.ContactNumber, _
-                app.LoanType, _
-                app.CompanyName, _
-                "₹" & app.LoanAmount.ToString("N0"), _
-                app.ApplicationDate.ToString("dd/MM/yyyy"), _
-                app.Status _
+            dgvApplications.Rows.Add(New String() {
+                app.ApplicationId,
+                app.ConsumerName,
+                app.Email,
+                app.ContactNumber,
+                app.LoanType,
+                app.CompanyName,
+                "₹" & app.LoanAmount.ToString("N0"),
+                app.ApplicationDate.ToString("dd/MM/yyyy"),
+                app.Status
             })
         Next
     End Sub

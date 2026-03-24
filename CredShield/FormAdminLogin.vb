@@ -79,17 +79,17 @@ Public Class FormAdminLogin
         btnLogin.Location = New Point(125, 235)
         btnLogin.Cursor = Cursors.Hand
         AddHandler btnLogin.Click, Sub()
-                                        If txtEmail.Text = "admin" AndAlso txtPassword.Text = "pass" Then
-                                            Dim adminForm As New FormAdminDashboard()
-                                            adminForm.Show()
-                                            Me.Hide()
-                                        Else
-                                            MessageBox.Show("Invalid credentials!", "Admin Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                            txtEmail.Clear()
-                                            txtPassword.Clear()
-                                            txtEmail.Focus()
-                                        End If
-                                    End Sub
+                                       If txtEmail.Text = "admin" AndAlso txtPassword.Text = "pass" Then
+                                           Dim adminForm As New FormAdminDashboard()
+                                           adminForm.Show()
+                                           Me.Hide()
+                                       Else
+                                           MessageBox.Show("Invalid credentials!", "Admin Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                           txtEmail.Clear()
+                                           txtPassword.Clear()
+                                           txtEmail.Focus()
+                                       End If
+                                   End Sub
         pnlMain.Controls.Add(btnLogin)
 
         ' Back Button

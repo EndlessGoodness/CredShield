@@ -21,8 +21,8 @@ Public Class LoanOffer
         Features = New List(Of String)()
     End Sub
 
-    Public Sub New(company As String, companyId As String, loanType As String, minAmt As Decimal, maxAmt As Decimal, _
-                   intMin As Decimal, intMax As Decimal, tenMin As Integer, tenMax As Integer, fee As Decimal, _
+    Public Sub New(company As String, companyId As String, loanType As String, minAmt As Decimal, maxAmt As Decimal,
+                   intMin As Decimal, intMax As Decimal, tenMin As Integer, tenMax As Integer, fee As Decimal,
                    approval As String, desc As String, rating As Decimal, reviews As Integer)
         Me.CompanyName = company
         Me.CompanyId = companyId
