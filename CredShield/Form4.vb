@@ -83,7 +83,8 @@ Public Class Form4
         btnHomeLoan.Cursor = Cursors.Hand
         AddHandler btnHomeLoan.Click, Sub()
                                           LoanManager.SelectedLoanType = "Home Loan"
-                                          Form5.Show()
+                                          Dim comparisonForm As New FormLoanComparison()
+                                          comparisonForm.Show()
                                           Me.Hide()
                                       End Sub
         pnlLoanButtons.Controls.Add(btnHomeLoan)
@@ -102,7 +103,8 @@ Public Class Form4
         btnBankLoan.Cursor = Cursors.Hand
         AddHandler btnBankLoan.Click, Sub()
                                           LoanManager.SelectedLoanType = "Bank Loan"
-                                          Form5.Show()
+                                          Dim comparisonForm As New FormLoanComparison()
+                                          comparisonForm.Show()
                                           Me.Hide()
                                       End Sub
         pnlLoanButtons.Controls.Add(btnBankLoan)
@@ -121,7 +123,8 @@ Public Class Form4
         btnFinancialLoan.Cursor = Cursors.Hand
         AddHandler btnFinancialLoan.Click, Sub()
                                                LoanManager.SelectedLoanType = "Financial Loan"
-                                               Form5.Show()
+                                               Dim comparisonForm As New FormLoanComparison()
+                                               comparisonForm.Show()
                                                Me.Hide()
                                            End Sub
         pnlLoanButtons.Controls.Add(btnFinancialLoan)
