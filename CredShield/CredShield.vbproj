@@ -136,6 +136,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DEPLOYMENT_SUMMARY.md" />
+    <None Include="GITHUB_SETUP.md" />
+    <None Include="LICENSE" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -146,9 +149,15 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+    <None Include="QUICKSTART.md" />
+    <None Include="README.md" />
+    <None Include="READY_FOR_GITHUB.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="APPLICATION_DOCUMENTATION.txt" />
+    <Content Include="GITHUB_UPLOAD_COMPLETE.txt" />
+    <Content Include="UPLOAD_INSTRUCTIONS.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
