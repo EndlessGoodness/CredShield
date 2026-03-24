@@ -91,6 +91,21 @@
         lblFooter.AutoSize = True
         lblFooter.Location = New Point(300, 650)
         Me.Controls.Add(lblFooter)
+
+        ' Add admin login link
+        Dim lblAdminLogin As New Label()
+        lblAdminLogin.Text = "👨‍💼 Admin"
+        lblAdminLogin.Font = New Font("Segoe UI", 8)
+        lblAdminLogin.ForeColor = Color.FromArgb(200, 220, 240)
+        lblAdminLogin.AutoSize = True
+        lblAdminLogin.Location = New Point(820, 650)
+        lblAdminLogin.Cursor = Cursors.Hand
+        AddHandler lblAdminLogin.Click, Sub()
+                                            Dim adminLogin As New FormAdminLogin()
+                                            adminLogin.Show()
+                                            Me.Hide()
+                                        End Sub
+        Me.Controls.Add(lblAdminLogin)
     End Sub
 
     Private Sub ShowLoadingForm()

@@ -19,27 +19,42 @@ Public Class FormLoanComparison
         ' Create header
         Dim pnlHeader As New Panel()
         pnlHeader.BackColor = Color.FromArgb(41, 128, 185)
-        pnlHeader.Size = New Size(1600, 80)
+        pnlHeader.Size = New Size(1600, 70)
         pnlHeader.Location = New Point(0, 0)
-        pnlHeader.Padding = New Padding(20)
+        pnlHeader.Padding = New Padding(15)
         Me.Controls.Add(pnlHeader)
 
         Dim lblLogo As New Label()
         lblLogo.Text = "💼 CredShield - Loan Comparison"
-        lblLogo.Font = New Font("Segoe UI", 20, FontStyle.Bold)
+        lblLogo.Font = New Font("Segoe UI", 18, FontStyle.Bold)
         lblLogo.ForeColor = Color.White
         lblLogo.AutoSize = True
-        lblLogo.Location = New Point(20, 15)
+        lblLogo.Location = New Point(20, 12)
         pnlHeader.Controls.Add(lblLogo)
+
+        Dim btnBack As New Button()
+        btnBack.Text = "← Back to Home"
+        btnBack.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+        btnBack.BackColor = Color.FromArgb(149, 165, 166)
+        btnBack.ForeColor = Color.White
+        btnBack.FlatStyle = FlatStyle.Flat
+        btnBack.Size = New Size(120, 32)
+        btnBack.Location = New Point(1320, 19)
+        btnBack.Cursor = Cursors.Hand
+        AddHandler btnBack.Click, Sub()
+                                      Form4.Show()
+                                      Me.Close()
+                                  End Sub
+        pnlHeader.Controls.Add(btnBack)
 
         Dim btnWishlist As New Button()
         btnWishlist.Text = "❤️ Wishlist (" & WishlistManager.GetWishlistCount() & ")"
-        btnWishlist.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        btnWishlist.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         btnWishlist.BackColor = Color.White
         btnWishlist.ForeColor = Color.FromArgb(41, 128, 185)
         btnWishlist.FlatStyle = FlatStyle.Flat
-        btnWishlist.Size = New Size(140, 35)
-        btnWishlist.Location = New Point(1440, 22)
+        btnWishlist.Size = New Size(140, 32)
+        btnWishlist.Location = New Point(1450, 19)
         btnWishlist.Cursor = Cursors.Hand
         AddHandler btnWishlist.Click, Sub() ShowWishlist()
         pnlHeader.Controls.Add(btnWishlist)
@@ -47,66 +62,66 @@ Public Class FormLoanComparison
         ' Create filter panel
         Dim pnlFilter As New Panel()
         pnlFilter.BackColor = Color.FromArgb(52, 73, 94)
-        pnlFilter.Size = New Size(1600, 100)
-        pnlFilter.Location = New Point(0, 80)
+        pnlFilter.Size = New Size(1600, 70)
+        pnlFilter.Location = New Point(0, 70)
         Me.Controls.Add(pnlFilter)
 
         Dim lblFilterTitle As New Label()
-        lblFilterTitle.Text = "📊 Select Loan Type:"
-        lblFilterTitle.Font = New Font("Segoe UI", 12, FontStyle.Bold)
+        lblFilterTitle.Text = "📊 Filter Loans:"
+        lblFilterTitle.Font = New Font("Segoe UI", 11, FontStyle.Bold)
         lblFilterTitle.ForeColor = Color.White
         lblFilterTitle.AutoSize = True
-        lblFilterTitle.Location = New Point(30, 15)
+        lblFilterTitle.Location = New Point(15, 10)
         pnlFilter.Controls.Add(lblFilterTitle)
 
         ' Home Loan Filter Button
         Dim btnHome As New Button()
-        btnHome.Text = "🏠 Home Loans"
-        btnHome.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        btnHome.Text = "🏠 Home"
+        btnHome.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         btnHome.BackColor = Color.FromArgb(41, 128, 185)
         btnHome.ForeColor = Color.White
         btnHome.FlatStyle = FlatStyle.Flat
-        btnHome.Size = New Size(180, 50)
-        btnHome.Location = New Point(30, 45)
+        btnHome.Size = New Size(110, 40)
+        btnHome.Location = New Point(15, 28)
         btnHome.Cursor = Cursors.Hand
         AddHandler btnHome.Click, Sub() DisplayOffers("Home Loan")
         pnlFilter.Controls.Add(btnHome)
 
         ' Bank Loan Filter Button
         Dim btnBank As New Button()
-        btnBank.Text = "🏦 Bank Loans"
-        btnBank.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        btnBank.Text = "🏦 Bank"
+        btnBank.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         btnBank.BackColor = Color.FromArgb(46, 204, 113)
         btnBank.ForeColor = Color.White
         btnBank.FlatStyle = FlatStyle.Flat
-        btnBank.Size = New Size(180, 50)
-        btnBank.Location = New Point(230, 45)
+        btnBank.Size = New Size(110, 40)
+        btnBank.Location = New Point(135, 28)
         btnBank.Cursor = Cursors.Hand
         AddHandler btnBank.Click, Sub() DisplayOffers("Bank Loan")
         pnlFilter.Controls.Add(btnBank)
 
         ' Financial Loan Filter Button
         Dim btnFinancial As New Button()
-        btnFinancial.Text = "💰 Financial Loans"
-        btnFinancial.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        btnFinancial.Text = "💰 Financial"
+        btnFinancial.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         btnFinancial.BackColor = Color.FromArgb(155, 89, 182)
         btnFinancial.ForeColor = Color.White
         btnFinancial.FlatStyle = FlatStyle.Flat
-        btnFinancial.Size = New Size(180, 50)
-        btnFinancial.Location = New Point(430, 45)
+        btnFinancial.Size = New Size(110, 40)
+        btnFinancial.Location = New Point(255, 28)
         btnFinancial.Cursor = Cursors.Hand
         AddHandler btnFinancial.Click, Sub() DisplayOffers("Financial Loan")
         pnlFilter.Controls.Add(btnFinancial)
 
         ' All Loans Button
         Dim btnAll As New Button()
-        btnAll.Text = "📋 All Loans"
-        btnAll.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        btnAll.Text = "📋 All"
+        btnAll.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         btnAll.BackColor = Color.FromArgb(149, 165, 166)
         btnAll.ForeColor = Color.White
         btnAll.FlatStyle = FlatStyle.Flat
-        btnAll.Size = New Size(150, 50)
-        btnAll.Location = New Point(630, 45)
+        btnAll.Size = New Size(110, 40)
+        btnAll.Location = New Point(375, 28)
         btnAll.Cursor = Cursors.Hand
         AddHandler btnAll.Click, Sub() DisplayOffers("")
         pnlFilter.Controls.Add(btnAll)
@@ -114,8 +129,8 @@ Public Class FormLoanComparison
         ' Create content panel with scrollbar
         pnlContent = New Panel()
         pnlContent.BackColor = Color.FromArgb(236, 240, 241)
-        pnlContent.Size = New Size(1580, 820)
-        pnlContent.Location = New Point(10, 190)
+        pnlContent.Size = New Size(1590, 860)
+        pnlContent.Location = New Point(5, 145)
         pnlContent.AutoScroll = True
         Me.Controls.Add(pnlContent)
 
