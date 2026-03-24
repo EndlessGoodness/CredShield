@@ -119,6 +119,9 @@
     <Compile Include="FormLoanComparison.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormModernHome.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LoanApplication.vb" />
     <Compile Include="LoanManager.vb" />
     <Compile Include="LoanOffer.vb" />
@@ -149,6 +152,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ADMIN_PANEL_IMPROVEMENTS.md" />
     <None Include="BEAUTIFICATION_SUMMARY.md" />
     <None Include="DEPLOYMENT_SUMMARY.md" />
     <None Include="GITHUB_SETUP.md" />

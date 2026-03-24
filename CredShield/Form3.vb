@@ -95,7 +95,8 @@ Public Class Form3
         btnLogin.Cursor = Cursors.Hand
         AddHandler btnLogin.Click, Sub()
                                        If txtEmail.Text <> "" AndAlso txtPassword.Text <> "" Then
-                                           Form4.Show()
+                                           Dim modernHome As New FormModernHome()
+                                           modernHome.Show()
                                            Me.Hide()
                                        Else
                                            MessageBox.Show("Please enter email and password!", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning)
