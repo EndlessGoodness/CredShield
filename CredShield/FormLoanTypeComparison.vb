@@ -25,8 +25,19 @@ Public Class FormLoanTypeComparison
 
     Private Sub LoadLoans()
         ' Get all loan offers and filter by type
+        ' Remove "s" from plural to match database (e.g., "Home Loans" -> "Home Loan")
+        Dim loanTypeToMatch As String = loanType
+        If loanTypeToMatch.EndsWith("s") AndAlso Not loanTypeToMatch.EndsWith("ss") Then
+            loanTypeToMatch = loanTypeToMatch.Substring(0, loanTypeToMatch.Length - 1)
+        End If
+
         Dim allOffers = LoanOffersDatabase.GetAllLoanOffers()
-        loanOffers = allOffers.Where(Function(x) x.LoanType = loanType).ToList()
+        loanOffers = allOffers.Where(Function(x) x.LoanType = loanTypeToMatch).ToList()
+
+        ' If no offers found, try alternative matching
+        If loanOffers.Count = 0 Then
+            loanOffers = allOffers.Where(Function(x) x.LoanType.Contains(loanTypeToMatch.Split(" ")(0))).ToList()
+        End If
     End Sub
 
     Private Sub BuildUI()

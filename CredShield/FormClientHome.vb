@@ -113,7 +113,7 @@ Public Class FormClientHome
         pnlContent.Controls.Add(pnlDivider)
 
         ' Three Loan Type Buttons
-        Dim loanTypes As String() = {"Home Loans", "Bank Loans", "Financial Loans"}
+        Dim loanTypes As String() = {"Home Loan", "Bank Loan", "Financial Loan"}
         Dim loanEmojis As String() = {"🏠", "💰", "📊"}
         Dim loanDescriptions As String() = {
             "Build Your Dream Home",
