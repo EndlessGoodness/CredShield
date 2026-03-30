@@ -62,6 +62,7 @@ Public Class FormWishlist
         dgvWishlist.AllowUserToAddRows = False
         dgvWishlist.MultiSelect = False
         dgvWishlist.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgvWishlist.ScrollBars = ScrollBars.Both
         Me.Controls.Add(dgvWishlist)
 
         ' Empty Message Label

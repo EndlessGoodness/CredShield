@@ -77,6 +77,7 @@ Public Class FormLoanTypeComparison
         Dim pnlContent As New Panel()
         pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         pnlContent.AutoScroll = True
+        pnlContent.AutoScrollMinSize = New Size(0, 500)
         pnlContent.Size = New Size(1400, 730)
         pnlContent.Location = New Point(0, 70)
         Me.Controls.Add(pnlContent)
@@ -96,7 +97,7 @@ Public Class FormLoanTypeComparison
         Dim posY As Integer = 50
         For Each offer In loanOffers
             CreateLoanCard(pnlContent, offer, posY)
-            posY += 220
+            posY += 260
         Next
 
         ' Footer with action buttons
@@ -122,7 +123,7 @@ Public Class FormLoanTypeComparison
         Dim pnlCard As New Panel()
         pnlCard.BackColor = Color.White
         pnlCard.BorderStyle = BorderStyle.FixedSingle
-        pnlCard.Size = New Size(1320, 200)
+        pnlCard.Size = New Size(1320, 240)
         pnlCard.Location = New Point(30, posY)
         pnlCard.Cursor = Cursors.Hand
         parent.Controls.Add(pnlCard)
@@ -153,7 +154,7 @@ Public Class FormLoanTypeComparison
         lblDesc.AutoSize = False
         lblDesc.TextAlign = ContentAlignment.TopLeft
         lblDesc.Location = New Point(20, 40)
-        lblDesc.Size = New Size(1300, 40)
+        lblDesc.Size = New Size(1280, 40)
         pnlCard.Controls.Add(lblDesc)
 
         ' Features
@@ -165,7 +166,7 @@ Public Class FormLoanTypeComparison
         lblFeatures.AutoSize = False
         lblFeatures.TextAlign = ContentAlignment.TopLeft
         lblFeatures.Location = New Point(20, 85)
-        lblFeatures.Size = New Size(1300, 50)
+        lblFeatures.Size = New Size(1280, 50)
         pnlCard.Controls.Add(lblFeatures)
 
         ' Key Details - 4 columns
@@ -185,9 +186,16 @@ Public Class FormLoanTypeComparison
             lblDetail.AutoSize = False
             lblDetail.TextAlign = ContentAlignment.TopLeft
             lblDetail.Location = New Point(detailPositions(i), 145)
-            lblDetail.Size = New Size(320, 50)
+            lblDetail.Size = New Size(320, 40)
             pnlCard.Controls.Add(lblDetail)
         Next
+
+        ' Action Row with buttons
+        Dim pnlActions As New Panel()
+        pnlActions.BackColor = Color.FromArgb(245, 245, 245)
+        pnlActions.Size = New Size(1320, 45)
+        pnlActions.Location = New Point(0, 190)
+        pnlCard.Controls.Add(pnlActions)
 
         ' Apply Button
         Dim btnApply As New Button()
@@ -198,25 +206,25 @@ Public Class FormLoanTypeComparison
         btnApply.FlatStyle = FlatStyle.Flat
         btnApply.FlatAppearance.BorderSize = 0
         btnApply.Size = New Size(120, 35)
-        btnApply.Location = New Point(1070, 160)
+        btnApply.Location = New Point(20, 8)
         btnApply.Cursor = Cursors.Hand
         Dim offerCopy = offer
         AddHandler btnApply.Click, Sub(sender As Object, e As EventArgs) ApplyForLoan(offerCopy)
-        pnlCard.Controls.Add(btnApply)
+        pnlActions.Controls.Add(btnApply)
 
         ' Wishlist Button
         Dim btnWishlist As New Button()
-        btnWishlist.Text = "❤️"
-        btnWishlist.Font = New Font("Segoe UI", 12, FontStyle.Bold)
+        btnWishlist.Text = "❤️ Add to Wishlist"
+        btnWishlist.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         btnWishlist.BackColor = Color.FromArgb(168, 85, 247)
         btnWishlist.ForeColor = Color.White
         btnWishlist.FlatStyle = FlatStyle.Flat
         btnWishlist.FlatAppearance.BorderSize = 0
-        btnWishlist.Size = New Size(50, 35)
-        btnWishlist.Location = New Point(1195, 160)
+        btnWishlist.Size = New Size(150, 35)
+        btnWishlist.Location = New Point(150, 8)
         btnWishlist.Cursor = Cursors.Hand
         AddHandler btnWishlist.Click, Sub(sender As Object, e As EventArgs) AddToWishlist(offerCopy, btnWishlist)
-        pnlCard.Controls.Add(btnWishlist)
+        pnlActions.Controls.Add(btnWishlist)
 
         ' Click handlers for card selection
         AddHandler pnlCard.Click, Sub(sender As Object, e As EventArgs) SelectLoan(offerCopy)

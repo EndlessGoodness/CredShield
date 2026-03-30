@@ -70,6 +70,7 @@ Public Class FormClientHome
         Dim pnlContent As New Panel()
         pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         pnlContent.AutoScroll = True
+        pnlContent.AutoScrollMinSize = New Size(0, 800)
         pnlContent.Size = New Size(1200, 780)
         pnlContent.Location = New Point(0, 70)
         Me.Controls.Add(pnlContent)

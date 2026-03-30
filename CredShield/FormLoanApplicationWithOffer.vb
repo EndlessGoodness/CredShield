@@ -45,6 +45,7 @@ Public Class FormLoanApplicationWithOffer
         ' Main Content with scroll
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
+        pnlContent.AutoScrollMinSize = New Size(0, 800)
         pnlContent.Size = New Size(800, 690)
         pnlContent.Location = New Point(0, 60)
         Me.Controls.Add(pnlContent)
