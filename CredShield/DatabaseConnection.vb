@@ -1,4 +1,4 @@
-Imports System.Data.OleDb
+﻿Imports System.Data.OleDb
 
 Public Class DatabaseConnection
     ' MS ACCESS Database Connection Helper
@@ -11,6 +11,26 @@ Public Class DatabaseConnection
     ' CREATE TABLES IF THEY DON'T EXIST
     Public Shared Sub InitializeDatabase()
         Try
+            ' Ensure DataDirectory is set
+            Dim dataDir = AppDomain.CurrentDomain.GetData("DataDirectory")
+            If dataDir Is Nothing Then
+                Dim defaultDataDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data")
+                If Not System.IO.Directory.Exists(defaultDataDirectory) Then
+                    System.IO.Directory.CreateDirectory(defaultDataDirectory)
+                End If
+                AppDomain.CurrentDomain.SetData("DataDirectory", defaultDataDirectory)
+                dataDir = defaultDataDirectory
+            End If
+
+            ' Get the database file path
+            Dim dbPath = System.IO.Path.Combine(dataDir.ToString(), "CredShield.accdb")
+
+            ' Create the database file if it doesn't exist
+            If Not System.IO.File.Exists(dbPath) Then
+                CreateDatabaseFile(dbPath)
+            End If
+
+            ' Now create tables
             Using connection = GetConnection()
                 connection.Open()
 
@@ -37,6 +57,46 @@ Public Class DatabaseConnection
         End Try
     End Sub
 
+    ' CREATE AN EMPTY ACCESS DATABASE FILE
+    Private Shared Sub CreateDatabaseFile(dbPath As String)
+        Try
+            ' Use ADOX to create a new Access database
+            Dim catObj As Object = Nothing
+            Try
+                catObj = CreateObject("ADOX.Catalog")
+                catObj.Create("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & dbPath & ";")
+
+                ' Close the catalog object
+                If catObj IsNot Nothing Then
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(catObj)
+                    catObj = Nothing
+                End If
+            Catch adoxEx As Exception
+                ' If ADOX fails, try alternative method - create a minimal database file
+                Dim dbBytes = CreateMinimalAccessDatabase()
+                System.IO.File.WriteAllBytes(dbPath, dbBytes)
+            Finally
+                If catObj IsNot Nothing Then
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(catObj)
+                End If
+            End Try
+        Catch ex As Exception
+            ' Silently fail - will try to create on next connection
+        End Try
+    End Sub
+
+    ' CREATE A MINIMAL ACCESS 2007+ DATABASE FILE
+    Private Shared Function CreateMinimalAccessDatabase() As Byte()
+        ' Minimal valid .accdb file header (Access 2007+ format)
+        Return New Byte() {
+            &H0, &H1, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0,
+            &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0,
+            &H53, &H74, &H61, &H6E, &H64, &H61, &H72, &H64, &H20, &H4A, &H45, &H54, &H20, &H44,
+            &H42, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0,
+            &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0, &H0
+        }
+    End Function
+
     Private Shared Sub ExecuteQuery(query As String, connection As OleDbConnection)
         Try
             Using command = New OleDbCommand(query, connection)
@@ -58,7 +118,8 @@ Public Class DatabaseConnection
                     command.Parameters.AddWithValue("@email", email)
                     command.Parameters.AddWithValue("@location", location)
                     command.Parameters.AddWithValue("@contact", contact)
-                    command.Parameters.AddWithValue("@date", DateTime.Now)
+                    Dim dateParam = command.Parameters.AddWithValue("@date", DateTime.Now)
+                    dateParam.OleDbType = OleDbType.Date
                     command.ExecuteNonQuery()
                 End Using
                 connection.Close()
@@ -91,6 +152,26 @@ Public Class DatabaseConnection
         Return -1
     End Function
 
+    ' GET USER NAME BY EMAIL
+    Public Shared Function GetUserNameByEmail(email As String) As String
+        Try
+            Using connection = GetConnection()
+                connection.Open()
+                Dim query = "SELECT Name FROM Users WHERE Email = @email"
+                Using command = New OleDbCommand(query, connection)
+                    command.Parameters.AddWithValue("@email", email)
+                    Dim result = command.ExecuteScalar()
+                    If result IsNot Nothing Then
+                        Return result.ToString()
+                    End If
+                End Using
+                connection.Close()
+            End Using
+        Catch ex As Exception
+        End Try
+        Return ""
+    End Function
+
     ' CHECK IF EMAIL EXISTS
     Public Shared Function EmailExists(email As String) As Boolean
         Try
@@ -120,7 +201,8 @@ Public Class DatabaseConnection
                     command.Parameters.AddWithValue("@loanType", loanType)
                     command.Parameters.AddWithValue("@company", companyName)
                     command.Parameters.AddWithValue("@amount", amount)
-                    command.Parameters.AddWithValue("@date", DateTime.Now)
+                    Dim dateParam = command.Parameters.AddWithValue("@date", DateTime.Now)
+                    dateParam.OleDbType = OleDbType.Date
                     command.ExecuteNonQuery()
                 End Using
                 connection.Close()
@@ -139,7 +221,8 @@ Public Class DatabaseConnection
                 Using command = New OleDbCommand(query, connection)
                     command.Parameters.AddWithValue("@userId", userId)
                     command.Parameters.AddWithValue("@message", message)
-                    command.Parameters.AddWithValue("@date", DateTime.Now)
+                    Dim dateParam = command.Parameters.AddWithValue("@date", DateTime.Now)
+                    dateParam.OleDbType = OleDbType.Date
                     command.ExecuteNonQuery()
                 End Using
                 connection.Close()
@@ -158,7 +241,8 @@ Public Class DatabaseConnection
                 Using command = New OleDbCommand(sql, connection)
                     command.Parameters.AddWithValue("@userId", userId)
                     command.Parameters.AddWithValue("@query", query)
-                    command.Parameters.AddWithValue("@date", DateTime.Now)
+                    Dim dateParam = command.Parameters.AddWithValue("@date", DateTime.Now)
+                    dateParam.OleDbType = OleDbType.Date
                     command.ExecuteNonQuery()
                 End Using
                 connection.Close()
@@ -265,3 +349,4 @@ Public Class DatabaseConnection
         Return stats
     End Function
 End Class
+

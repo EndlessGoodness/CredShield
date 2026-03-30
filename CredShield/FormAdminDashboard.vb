@@ -41,7 +41,7 @@ Public Class FormAdminDashboard
         btnLogout.Location = New Point(1285, 19)
         btnLogout.Cursor = Cursors.Hand
         AddHandler btnLogout.Click, Sub()
-                                        Form1.Show()
+                                        FormNewHome.Show()
                                         Me.Close()
                                     End Sub
         pnlHeader.Controls.Add(btnLogout)

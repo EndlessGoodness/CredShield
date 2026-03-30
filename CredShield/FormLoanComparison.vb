@@ -42,7 +42,8 @@ Public Class FormLoanComparison
         btnBack.Location = New Point(1320, 19)
         btnBack.Cursor = Cursors.Hand
         AddHandler btnBack.Click, Sub()
-                                      Form4.Show()
+                                      Dim frm As New FormAdminDashboard()
+                                      frm.Show()
                                       Me.Close()
                                   End Sub
         pnlHeader.Controls.Add(btnBack)
@@ -278,7 +279,8 @@ Public Class FormLoanComparison
         btnApply.Cursor = Cursors.Hand
         AddHandler btnApply.Click, Sub()
                                        LoanManager.SelectedLoanType = offer.LoanType
-                                       Form5.Show()
+                                       Dim regForm As New FormLoanRegistration(1, offer.LoanType, "User")
+                                       regForm.Show()
                                        Me.Hide()
                                    End Sub
         card.Controls.Add(btnApply)

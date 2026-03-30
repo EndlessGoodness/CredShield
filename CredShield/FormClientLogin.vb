@@ -3,6 +3,7 @@ Public Class FormClientLogin
 
     Private currentUserId As Integer = -1
     Private txtEmail As TextBox
+    Private txtPassword As TextBox
     Private currentUserName As String = ""
 
     Public Sub New()
@@ -26,7 +27,7 @@ Public Class FormClientLogin
         Me.Controls.Add(pnlHeader)
 
         Dim lblTitle As New Label()
-        lblTitle.Text = "👤 CLIENT LOGIN"
+        lblTitle.Text = "👤 LOGIN"
         lblTitle.Font = New Font("Segoe UI", 16, FontStyle.Bold)
         lblTitle.ForeColor = Color.White
         lblTitle.AutoSize = False
@@ -63,6 +64,22 @@ Public Class FormClientLogin
         txtEmail.BorderStyle = BorderStyle.FixedSingle
         tabLogin.Controls.Add(txtEmail)
 
+        Dim lblPassword As New Label()
+        lblPassword.Text = "🔒 Password:"
+        lblPassword.Font = New Font("Segoe UI", 11)
+        lblPassword.ForeColor = Color.FromArgb(52, 73, 94)
+        lblPassword.AutoSize = True
+        lblPassword.Location = New Point(50, 130)
+        tabLogin.Controls.Add(lblPassword)
+
+        txtPassword = New TextBox()
+        txtPassword.Location = New Point(50, 160)
+        txtPassword.Size = New Size(780, 35)
+        txtPassword.Font = New Font("Segoe UI", 11)
+        txtPassword.BorderStyle = BorderStyle.FixedSingle
+        txtPassword.PasswordChar = "*"c
+        tabLogin.Controls.Add(txtPassword)
+
         Dim btnLogin As New Button()
         btnLogin.Text = "✅ LOGIN"
         btnLogin.Font = New Font("Segoe UI", 12, FontStyle.Bold)
@@ -71,95 +88,63 @@ Public Class FormClientLogin
         btnLogin.FlatStyle = FlatStyle.Flat
         btnLogin.FlatAppearance.BorderSize = 0
         btnLogin.Size = New Size(200, 45)
-        btnLogin.Location = New Point(350, 140)
+        btnLogin.Location = New Point(350, 220)
         btnLogin.Cursor = Cursors.Hand
         AddHandler btnLogin.Click, Sub() Login()
         tabLogin.Controls.Add(btnLogin)
-
-        ' Services Tab
-        Dim tabServices As New TabPage()
-        tabServices.Text = "🎯 Our Services"
-        tabServices.BackColor = Color.White
-        tabControl.TabPages.Add(tabServices)
-
-        Dim lblMessage As New Label()
-        lblMessage.Text = "Select a service to register:"
-        lblMessage.Font = New Font("Segoe UI", 12, FontStyle.Bold)
-        lblMessage.ForeColor = Color.FromArgb(15, 23, 42)
-        lblMessage.AutoSize = True
-        lblMessage.Location = New Point(50, 30)
-        tabServices.Controls.Add(lblMessage)
-
-        ' Service bubbles
-        CreateServiceBubble(tabServices, 50, 80, "💼 INCOME TAX", "Income Tax Services", Color.FromArgb(59, 130, 246))
-        CreateServiceBubble(tabServices, 250, 80, "📋 GST", "GST Compliance", Color.FromArgb(34, 197, 94))
-        CreateServiceBubble(tabServices, 450, 80, "🛡️ INSURANCE", "Insurance Plans", Color.FromArgb(168, 85, 247))
-        CreateServiceBubble(tabServices, 650, 80, "🏠 PROPERTIES", "Property Services", Color.FromArgb(234, 179, 8))
-        
-        CreateServiceBubble(tabServices, 150, 250, "💰 HOME LOANS", "Home Loan", Color.FromArgb(233, 30, 99))
-        CreateServiceBubble(tabServices, 350, 250, "🏦 BANK LOANS", "Bank Loan", Color.FromArgb(0, 150, 136))
-        CreateServiceBubble(tabServices, 550, 250, "💳 FINANCIAL", "Financial Loan", Color.FromArgb(255, 87, 34))
     End Sub
-
-    Private Sub CreateServiceBubble(parentTab As TabPage, x As Integer, y As Integer, title As String, loanType As String, color As Color)
-        ' Create rounded panel for bubble effect
-        Dim bubble As New Button()
-        bubble.Text = title
-        bubble.Font = New Font("Segoe UI", 11, FontStyle.Bold)
-        bubble.BackColor = color
-        bubble.ForeColor = Color.White
-        bubble.FlatStyle = FlatStyle.Flat
-        bubble.FlatAppearance.BorderSize = 0
-        bubble.Size = New Size(150, 150)
-        bubble.Location = New Point(x, y)
-        bubble.Cursor = Cursors.Hand
-        bubble.FlatAppearance.MouseOverBackColor = DarkenColor(color, 30)
-        
-        ' Add click event
-        AddHandler bubble.Click, Sub()
-                                     If currentUserId <= 0 Then
-                                         MessageBox.Show("Please login first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                                         Return
-                                     End If
-                                     ShowLoanRegistration(loanType)
-                                 End Sub
-
-        parentTab.Controls.Add(bubble)
-
-        ' Add hover effect
-        AddHandler bubble.MouseEnter, Sub()
-                                          bubble.BackColor = DarkenColor(color, 20)
-                                      End Sub
-        AddHandler bubble.MouseLeave, Sub()
-                                          bubble.BackColor = color
-                                      End Sub
-    End Sub
-
-    Private Function DarkenColor(color As Color, amount As Integer) As Color
-        Return Color.FromArgb( _
-            Math.Max(color.R - amount, 0), _
-            Math.Max(color.G - amount, 0), _
-            Math.Max(color.B - amount, 0))
-    End Function
 
     Private Sub Login()
         If String.IsNullOrWhiteSpace(txtEmail.Text) Then
-            MessageBox.Show("Please enter your email!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            MessageBox.Show("Please enter your username/email!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
-        currentUserId = DatabaseConnection.GetUserIDByEmail(txtEmail.Text)
+        If String.IsNullOrWhiteSpace(txtPassword.Text) Then
+            MessageBox.Show("Please enter your password!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        Dim username As String = txtEmail.Text.Trim()
+        Dim password As String = txtPassword.Text.Trim()
+
+        ' Check for admin login
+        If username = "admin" AndAlso password = "abc" Then
+            MessageBox.Show("✅ Welcome Admin!" & vbCrLf & vbCrLf & "Logging into Admin Dashboard.", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            txtPassword.Clear()
+            Dim adminDashboard As New FormAdminDashboard()
+            adminDashboard.Show()
+            Me.Close()
+            Return
+        End If
+
+        ' Check for client login
+        If username = "abc" AndAlso password = "abc" Then
+            currentUserName = "abc"
+            currentUserId = 1
+            MessageBox.Show("✅ Welcome " & currentUserName & "!" & vbCrLf & vbCrLf & "Logging into Client Home.", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            txtPassword.Clear()
+            Dim clientHome As New FormClientHome()
+            clientHome.Show()
+            Me.Close()
+            Return
+        End If
+
+        ' Check if user exists in database
+        currentUserId = DatabaseConnection.GetUserIDByEmail(username)
 
         If currentUserId > 0 Then
-            MessageBox.Show("✅ Login successful! You can now select a service.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            currentUserName = DatabaseConnection.GetUserNameByEmail(username)
+            MessageBox.Show("✅ Welcome " & currentUserName & "!" & vbCrLf & vbCrLf & "Logging into Client Home.", "Login Successful", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            txtPassword.Clear()
+            Dim clientHome As New FormClientHome()
+            clientHome.Show()
+            Me.Close()
         Else
-            MessageBox.Show("❌ Email not found. Please register first.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("❌ Invalid credentials. Please check your username and password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
             currentUserId = -1
+            currentUserName = ""
+            txtPassword.Clear()
         End If
-    End Sub
-
-    Private Sub ShowLoanRegistration(loanType As String)
-        Dim registrationForm As New FormLoanRegistration(currentUserId, loanType, currentUserName)
-        registrationForm.ShowDialog()
     End Sub
 End Class

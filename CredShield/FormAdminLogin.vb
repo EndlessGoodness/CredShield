@@ -103,7 +103,7 @@ Public Class FormAdminLogin
         btnBack.Location = New Point(250, 235)
         btnBack.Cursor = Cursors.Hand
         AddHandler btnBack.Click, Sub()
-                                      Form1.Show()
+                                      FormNewHome.Show()
                                       Me.Close()
                                   End Sub
         pnlMain.Controls.Add(btnBack)

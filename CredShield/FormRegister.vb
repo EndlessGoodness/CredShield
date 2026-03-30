@@ -3,16 +3,17 @@ Public Class FormRegister
 
     Private txtName As TextBox
     Private txtEmail As TextBox
+    Private txtPassword As TextBox
+    Private txtConfirmPassword As TextBox
     Private txtLocation As TextBox
     Private txtContact As TextBox
-    Private txtFeedback As TextBox
     Private storedUserId As Integer = -1
 
     Public Sub New()
         MyBase.New()
         Me.Text = "Register - CredShield"
         Me.StartPosition = FormStartPosition.CenterScreen
-        Me.Size = New Size(700, 800)
+        Me.Size = New Size(700, 950)
         Me.BackColor = Color.FromArgb(249, 250, 251)
         Me.DoubleBuffered = True
         Me.FormBorderStyle = FormBorderStyle.FixedSingle
@@ -41,7 +42,7 @@ Public Class FormRegister
         ' Main content
         Dim pnlContent As New Panel()
         pnlContent.BackColor = Color.White
-        pnlContent.Size = New Size(680, 700)
+        pnlContent.Size = New Size(680, 870)
         pnlContent.Location = New Point(10, 70)
         pnlContent.BorderStyle = BorderStyle.FixedSingle
         Me.Controls.Add(pnlContent)
@@ -86,6 +87,46 @@ Public Class FormRegister
 
         yPos += 40
 
+        ' Password
+        Dim lblPassword As New Label()
+        lblPassword.Text = "🔒 Password:"
+        lblPassword.Font = New Font("Segoe UI", 10)
+        lblPassword.ForeColor = Color.FromArgb(52, 73, 94)
+        lblPassword.AutoSize = True
+        lblPassword.Location = New Point(20, yPos)
+        pnlContent.Controls.Add(lblPassword)
+
+        yPos += 25
+        txtPassword = New TextBox()
+        txtPassword.Location = New Point(20, yPos)
+        txtPassword.Size = New Size(640, 30)
+        txtPassword.Font = New Font("Segoe UI", 10)
+        txtPassword.BorderStyle = BorderStyle.FixedSingle
+        txtPassword.PasswordChar = "*"c
+        pnlContent.Controls.Add(txtPassword)
+
+        yPos += 40
+
+        ' Confirm Password
+        Dim lblConfirmPassword As New Label()
+        lblConfirmPassword.Text = "🔒 Confirm Password:"
+        lblConfirmPassword.Font = New Font("Segoe UI", 10)
+        lblConfirmPassword.ForeColor = Color.FromArgb(52, 73, 94)
+        lblConfirmPassword.AutoSize = True
+        lblConfirmPassword.Location = New Point(20, yPos)
+        pnlContent.Controls.Add(lblConfirmPassword)
+
+        yPos += 25
+        txtConfirmPassword = New TextBox()
+        txtConfirmPassword.Location = New Point(20, yPos)
+        txtConfirmPassword.Size = New Size(640, 30)
+        txtConfirmPassword.Font = New Font("Segoe UI", 10)
+        txtConfirmPassword.BorderStyle = BorderStyle.FixedSingle
+        txtConfirmPassword.PasswordChar = "*"c
+        pnlContent.Controls.Add(txtConfirmPassword)
+
+        yPos += 40
+
         ' Location
         Dim lblLocation As New Label()
         lblLocation.Text = "📍 Location:"
@@ -124,26 +165,6 @@ Public Class FormRegister
 
         yPos += 40
 
-        ' Feedback
-        Dim lblFeedback As New Label()
-        lblFeedback.Text = "💬 Feedback/Suggestions:"
-        lblFeedback.Font = New Font("Segoe UI", 10)
-        lblFeedback.ForeColor = Color.FromArgb(52, 73, 94)
-        lblFeedback.AutoSize = True
-        lblFeedback.Location = New Point(20, yPos)
-        pnlContent.Controls.Add(lblFeedback)
-
-        yPos += 25
-        txtFeedback = New TextBox()
-        txtFeedback.Location = New Point(20, yPos)
-        txtFeedback.Size = New Size(640, 80)
-        txtFeedback.Font = New Font("Segoe UI", 10)
-        txtFeedback.Multiline = True
-        txtFeedback.BorderStyle = BorderStyle.FixedSingle
-        pnlContent.Controls.Add(txtFeedback)
-
-        yPos += 100
-
         ' Register Button
         Dim btnRegister As New Button()
         btnRegister.Text = "✅ REGISTER"
@@ -177,9 +198,25 @@ Public Class FormRegister
 
     Private Sub RegisterUser()
         ' Validate inputs
-        If String.IsNullOrWhiteSpace(txtName.Text) OrElse String.IsNullOrWhiteSpace(txtEmail.Text) OrElse _
+        If String.IsNullOrWhiteSpace(txtName.Text) OrElse String.IsNullOrWhiteSpace(txtEmail.Text) OrElse
+           String.IsNullOrWhiteSpace(txtPassword.Text) OrElse String.IsNullOrWhiteSpace(txtConfirmPassword.Text) OrElse
            String.IsNullOrWhiteSpace(txtLocation.Text) OrElse String.IsNullOrWhiteSpace(txtContact.Text) Then
             MessageBox.Show("Please fill in all required fields!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        ' Validate password match
+        If txtPassword.Text <> txtConfirmPassword.Text Then
+            MessageBox.Show("Passwords do not match! Please try again.", "Password Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtPassword.Clear()
+            txtConfirmPassword.Clear()
+            txtPassword.Focus()
+            Return
+        End If
+
+        ' Validate password strength (minimum 6 characters)
+        If txtPassword.Text.Length < 6 Then
+            MessageBox.Show("Password must be at least 6 characters long!", "Weak Password", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
@@ -193,14 +230,9 @@ Public Class FormRegister
         storedUserId = DatabaseConnection.InsertUser(txtName.Text, txtEmail.Text, txtLocation.Text, txtContact.Text)
 
         If storedUserId > 0 Then
-            ' Save feedback if provided
-            If Not String.IsNullOrWhiteSpace(txtFeedback.Text) Then
-                DatabaseConnection.InsertFeedback(storedUserId, txtFeedback.Text)
-            End If
-
-            MessageBox.Show("✅ YOU ARE NOW REGISTERED!" & vbCrLf & vbCrLf & _
-                          "Your registration has been saved successfully." & vbCrLf & _
-                          "You can now login to access our services.", _
+            MessageBox.Show("✅ YOU ARE NOW REGISTERED!" & vbCrLf & vbCrLf &
+                          "Your registration has been saved successfully." & vbCrLf &
+                          "You can now login to access our services.",
                           "Registration Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Me.Close()
         Else
