@@ -122,7 +122,7 @@ Public Class FormLoanTypeComparison
         Dim pnlCard As New Panel()
         pnlCard.BackColor = Color.White
         pnlCard.BorderStyle = BorderStyle.FixedSingle
-        pnlCard.Size = New Size(1340, 200)
+        pnlCard.Size = New Size(1320, 200)
         pnlCard.Location = New Point(30, posY)
         pnlCard.Cursor = Cursors.Hand
         parent.Controls.Add(pnlCard)
@@ -198,7 +198,7 @@ Public Class FormLoanTypeComparison
         btnApply.FlatStyle = FlatStyle.Flat
         btnApply.FlatAppearance.BorderSize = 0
         btnApply.Size = New Size(120, 35)
-        btnApply.Location = New Point(1050, 160)
+        btnApply.Location = New Point(1070, 160)
         btnApply.Cursor = Cursors.Hand
         Dim offerCopy = offer
         AddHandler btnApply.Click, Sub(sender As Object, e As EventArgs) ApplyForLoan(offerCopy)
@@ -213,7 +213,7 @@ Public Class FormLoanTypeComparison
         btnWishlist.FlatStyle = FlatStyle.Flat
         btnWishlist.FlatAppearance.BorderSize = 0
         btnWishlist.Size = New Size(50, 35)
-        btnWishlist.Location = New Point(1175, 160)
+        btnWishlist.Location = New Point(1195, 160)
         btnWishlist.Cursor = Cursors.Hand
         AddHandler btnWishlist.Click, Sub(sender As Object, e As EventArgs) AddToWishlist(offerCopy, btnWishlist)
         pnlCard.Controls.Add(btnWishlist)
