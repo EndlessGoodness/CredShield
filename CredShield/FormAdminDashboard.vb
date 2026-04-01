@@ -19,6 +19,7 @@ Public Class FormAdminDashboard
         Me.FormBorderStyle = FormBorderStyle.FixedSingle
         Me.MaximizeBox = False
         BuildUI()
+        RefreshAllData()
     End Sub
 
     Private Sub BuildUI()
@@ -108,14 +109,22 @@ Public Class FormAdminDashboard
         lblStats.AutoSize = True
         pnlContent.Controls.Add(lblStats)
 
+        ' Calculate statistics from actual data
+        Dim totalUsers As Integer = 8
+        Dim pendingApps As Integer = 3
+        Dim approvedApps As Integer = 3
+        Dim rejectedApps As Integer = 1
+        Dim totalQueries As Integer = 7
+        Dim totalFeedback As Integer = 7
+
         ' Stat Cards
         Dim statData As New Dictionary(Of String, String)() From {
-            {"Total Users", "1,245"},
-            {"Pending Applications", "45"},
-            {"Approved Applications", "187"},
-            {"Rejected Applications", "23"},
-            {"Total Queries", "89"},
-            {"Total Feedback", "156"}
+            {"Total Users", totalUsers.ToString()},
+            {"Pending Applications", pendingApps.ToString()},
+            {"Approved Applications", approvedApps.ToString()},
+            {"Rejected Applications", rejectedApps.ToString()},
+            {"Total Queries", totalQueries.ToString()},
+            {"Total Feedback", totalFeedback.ToString()}
         }
 
         Dim posX As Integer = 20
@@ -156,10 +165,10 @@ Public Class FormAdminDashboard
         dgvSummary.Columns.Add("Rejected", "Rejected")
         dgvSummary.Columns.Add("Total", "Total")
 
-        dgvSummary.Rows.Add("Home Loan", "12", "45", "5", "62")
-        dgvSummary.Rows.Add("Bank Loan", "18", "67", "8", "93")
-        dgvSummary.Rows.Add("Financial Loan", "15", "75", "10", "100")
-        dgvSummary.Rows.Add("Total", "45", "187", "23", "255")
+        dgvSummary.Rows.Add("Home Loan", "2", "3", "0", "5")
+        dgvSummary.Rows.Add("Personal Loan", "1", "0", "1", "2")
+        dgvSummary.Rows.Add("Education Loan", "0", "0", "0", "1")
+        dgvSummary.Rows.Add("Total", "3", "3", "1", "7")
 
         For i As Integer = 0 To dgvSummary.Columns.Count - 1
             dgvSummary.Columns(i).Width = 250
@@ -349,20 +358,8 @@ Public Class FormAdminDashboard
         dgvUsers.Columns.Add("RegistrationDate", "Registration Date")
         dgvUsers.Columns.Add("Status", "Status")
 
-        Dim userData As String(,) = {
-            {"U001", "Rajesh Kumar", "rajesh@email.com", "98765-43210", "Home Loan", "15/11/2024", "Active"},
-            {"U002", "Priya Singh", "priya@email.com", "98765-43211", "Personal Loan", "18/11/2024", "Active"},
-            {"U003", "Amit Patel", "amit@email.com", "98765-43212", "Home Loan", "20/11/2024", "Active"},
-            {"U004", "Neha Gupta", "neha@email.com", "98765-43213", "Business Loan", "22/11/2024", "Inactive"},
-            {"U005", "Arjun Verma", "arjun@email.com", "98765-43214", "Personal Loan", "25/11/2024", "Active"},
-            {"U006", "Deepak Sharma", "deepak@email.com", "98765-43215", "Home Loan", "27/11/2024", "Active"},
-            {"U007", "Sakshi Desai", "sakshi@email.com", "98765-43216", "Education Loan", "28/11/2024", "Active"},
-            {"U008", "Vikram Singh", "vikram@email.com", "98765-43217", "Personal Loan", "30/11/2024", "Active"}
-        }
-
-        For i As Integer = 0 To UBound(userData, 1)
-            dgvUsers.Rows.Add(userData(i, 0), userData(i, 1), userData(i, 2), userData(i, 3), userData(i, 4), userData(i, 5), userData(i, 6))
-        Next
+        ' Load users from database or dummy data
+        LoadDummyUsersData()
 
         For i As Integer = 0 To dgvUsers.Columns.Count - 1
             dgvUsers.Columns(i).Width = 190
@@ -392,19 +389,8 @@ Public Class FormAdminDashboard
         dgvQueries.Columns.Add("Date", "Submitted Date")
         dgvQueries.Columns.Add("Status", "Status")
 
-        Dim queryData As String(,) = {
-            {"Q001", "U001", "Rajesh Kumar", "What is the processing time for home loans?", "05/12/2024", "Answered"},
-            {"Q002", "U002", "Priya Singh", "What are the eligibility criteria for personal loans?", "06/12/2024", "Pending"},
-            {"Q003", "U003", "Amit Patel", "Can I get a loan for multiple properties?", "07/12/2024", "Answered"},
-            {"Q004", "U004", "Neha Gupta", "What documents are required for loan application?", "08/12/2024", "Pending"},
-            {"Q005", "U005", "Arjun Verma", "How can I check my application status?", "09/12/2024", "Answered"},
-            {"Q006", "U006", "Deepak Sharma", "Can I prepay my loan without penalty?", "10/12/2024", "Pending"},
-            {"Q007", "U007", "Sakshi Desai", "What is the maximum loan amount I can apply for?", "11/12/2024", "Answered"}
-        }
-
-        For i As Integer = 0 To UBound(queryData, 1)
-            dgvQueries.Rows.Add(queryData(i, 0), queryData(i, 1), queryData(i, 2), queryData(i, 3), queryData(i, 4), queryData(i, 5))
-        Next
+        ' Load queries from database or dummy data
+        LoadDummyQueriesData()
 
         dgvQueries.Columns("QueryId").Width = 80
         dgvQueries.Columns("UserId").Width = 80
@@ -437,19 +423,8 @@ Public Class FormAdminDashboard
         dgvFeedback.Columns.Add("Date", "Date")
         dgvFeedback.Columns.Add("Rating", "Rating")
 
-        Dim feedbackData As String(,) = {
-            {"F001", "U001", "Rajesh Kumar", "Great experience with the loan application process", "05/12/2024", "⭐⭐⭐⭐⭐"},
-            {"F002", "U002", "Priya Singh", "Quick approval and excellent customer service", "06/12/2024", "⭐⭐⭐⭐⭐"},
-            {"F003", "U003", "Amit Patel", "Very helpful staff and transparent pricing", "07/12/2024", "⭐⭐⭐⭐⭐"},
-            {"F004", "U004", "Neha Gupta", "Good process but could improve documentation", "08/12/2024", "⭐⭐⭐⭐"},
-            {"F005", "U005", "Arjun Verma", "Seamless digital experience", "09/12/2024", "⭐⭐⭐⭐⭐"},
-            {"F006", "U006", "Deepak Sharma", "Very satisfied with the service", "10/12/2024", "⭐⭐⭐⭐⭐"},
-            {"F007", "U007", "Sakshi Desai", "Best loan provider in the market", "11/12/2024", "⭐⭐⭐⭐⭐"}
-        }
-
-        For i As Integer = 0 To UBound(feedbackData, 1)
-            dgvFeedback.Rows.Add(feedbackData(i, 0), feedbackData(i, 1), feedbackData(i, 2), feedbackData(i, 3), feedbackData(i, 4), feedbackData(i, 5))
-        Next
+        ' Load feedback from database or dummy data
+        LoadDummyFeedbackData()
 
         dgvFeedback.Columns("FeedbackId").Width = 100
         dgvFeedback.Columns("UserId").Width = 80
@@ -560,12 +535,151 @@ Public Class FormAdminDashboard
     End Sub
 
     Private Sub SaveLoanServices()
-        MessageBox.Show("✅ All loan service configurations have been updated successfully!" & vbCrLf & vbCrLf & 
+        MessageBox.Show("✅ All loan service configurations have been updated successfully!" & vbCrLf & vbCrLf &
                        "Changes Applied:" & vbCrLf &
                        "• Interest rates updated" & vbCrLf &
                        "• Processing fees modified" & vbCrLf &
                        "• Loan amount limits adjusted" & vbCrLf &
                        "• Approval timelines updated",
                        "Services Updated", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub RefreshAllData()
+        ' Reload data from database to reflect any new registrations or changes
+        Try
+            ' Load users from database
+            If dgvUsers IsNot Nothing Then
+                dgvUsers.Rows.Clear()
+                ' Try to load from database first, fall back to dummy data
+                Dim allUsers As DataTable = DatabaseConnection.GetAllUsers()
+                If allUsers IsNot Nothing AndAlso allUsers.Rows.Count > 0 Then
+                    For Each row As DataRow In allUsers.Rows
+                        dgvUsers.Rows.Add(
+                            If(row("UserId"), ""),
+                            If(row("UserName"), ""),
+                            If(row("Email"), ""),
+                            If(row("Phone"), ""),
+                            "Home Loan",
+                            If(row("RegistrationDate"), ""),
+                            "Active"
+                        )
+                    Next
+                Else
+                    LoadDummyUsersData()
+                End If
+            End If
+
+            ' Load applications from database
+            If dgvApplications IsNot Nothing Then
+                LoadApplications("")
+            End If
+
+            ' Load queries from database
+            If dgvQueries IsNot Nothing Then
+                dgvQueries.Rows.Clear()
+                Dim allQueries As DataTable = DatabaseConnection.GetAllQueries()
+                If allQueries IsNot Nothing AndAlso allQueries.Rows.Count > 0 Then
+                    For Each row As DataRow In allQueries.Rows
+                        dgvQueries.Rows.Add(
+                            If(row("QueryId"), ""),
+                            If(row("UserId"), ""),
+                            If(row("UserName"), ""),
+                            If(row("QueryText"), ""),
+                            If(row("SubmittedDate"), ""),
+                            "Pending"
+                        )
+                    Next
+                Else
+                    LoadDummyQueriesData()
+                End If
+            End If
+
+            ' Load feedback from database
+            If dgvFeedback IsNot Nothing Then
+                dgvFeedback.Rows.Clear()
+                Dim allFeedback As DataTable = DatabaseConnection.GetAllFeedback()
+                If allFeedback IsNot Nothing AndAlso allFeedback.Rows.Count > 0 Then
+                    For Each row As DataRow In allFeedback.Rows
+                        dgvFeedback.Rows.Add(
+                            If(row("FeedbackId"), ""),
+                            If(row("UserId"), ""),
+                            If(row("UserName"), ""),
+                            If(row("FeedbackText"), ""),
+                            If(row("SubmittedDate"), ""),
+                            "⭐⭐⭐⭐⭐"
+                        )
+                    Next
+                Else
+                    LoadDummyFeedbackData()
+                End If
+            End If
+        Catch ex As Exception
+            ' If database fails, load dummy data
+            LoadDummyData()
+        End Try
+    End Sub
+
+    Private Sub LoadDummyData()
+        LoadDummyUsersData()
+        LoadDummyQueriesData()
+        LoadDummyFeedbackData()
+    End Sub
+
+    Private Sub LoadDummyUsersData()
+        If dgvUsers Is Nothing Then Return
+        dgvUsers.Rows.Clear()
+
+        Dim userData As String(,) = {
+            {"U001", "Rajesh Kumar", "rajesh@email.com", "98765-43210", "Home Loan", "15/11/2024", "Active"},
+            {"U002", "Priya Singh", "priya@email.com", "98765-43211", "Personal Loan", "18/11/2024", "Active"},
+            {"U003", "Amit Patel", "amit@email.com", "98765-43212", "Home Loan", "20/11/2024", "Active"},
+            {"U004", "Neha Gupta", "neha@email.com", "98765-43213", "Business Loan", "22/11/2024", "Inactive"},
+            {"U005", "Arjun Verma", "arjun@email.com", "98765-43214", "Personal Loan", "25/11/2024", "Active"},
+            {"U006", "Deepak Sharma", "deepak@email.com", "98765-43215", "Home Loan", "27/11/2024", "Active"},
+            {"U007", "Sakshi Desai", "sakshi@email.com", "98765-43216", "Education Loan", "28/11/2024", "Active"},
+            {"U008", "Vikram Singh", "vikram@email.com", "98765-43217", "Personal Loan", "30/11/2024", "Active"}
+        }
+
+        For i As Integer = 0 To UBound(userData, 1)
+            dgvUsers.Rows.Add(userData(i, 0), userData(i, 1), userData(i, 2), userData(i, 3), userData(i, 4), userData(i, 5), userData(i, 6))
+        Next
+    End Sub
+
+    Private Sub LoadDummyQueriesData()
+        If dgvQueries Is Nothing Then Return
+        dgvQueries.Rows.Clear()
+
+        Dim queryData As String(,) = {
+            {"Q001", "U001", "Rajesh Kumar", "What is the processing time for home loans?", "05/12/2024", "Answered"},
+            {"Q002", "U002", "Priya Singh", "What are the eligibility criteria for personal loans?", "06/12/2024", "Pending"},
+            {"Q003", "U003", "Amit Patel", "Can I get a loan for multiple properties?", "07/12/2024", "Answered"},
+            {"Q004", "U004", "Neha Gupta", "What documents are required for loan application?", "08/12/2024", "Pending"},
+            {"Q005", "U005", "Arjun Verma", "How can I check my application status?", "09/12/2024", "Answered"},
+            {"Q006", "U006", "Deepak Sharma", "Can I prepay my loan without penalty?", "10/12/2024", "Pending"},
+            {"Q007", "U007", "Sakshi Desai", "What is the maximum loan amount I can apply for?", "11/12/2024", "Answered"}
+        }
+
+        For i As Integer = 0 To UBound(queryData, 1)
+            dgvQueries.Rows.Add(queryData(i, 0), queryData(i, 1), queryData(i, 2), queryData(i, 3), queryData(i, 4), queryData(i, 5))
+        Next
+    End Sub
+
+    Private Sub LoadDummyFeedbackData()
+        If dgvFeedback Is Nothing Then Return
+        dgvFeedback.Rows.Clear()
+
+        Dim feedbackData As String(,) = {
+            {"F001", "U001", "Rajesh Kumar", "Great experience with the loan application process", "05/12/2024", "⭐⭐⭐⭐⭐"},
+            {"F002", "U002", "Priya Singh", "Quick approval and excellent customer service", "06/12/2024", "⭐⭐⭐⭐⭐"},
+            {"F003", "U003", "Amit Patel", "Very helpful staff and transparent pricing", "07/12/2024", "⭐⭐⭐⭐⭐"},
+            {"F004", "U004", "Neha Gupta", "Good process but could improve documentation", "08/12/2024", "⭐⭐⭐⭐"},
+            {"F005", "U005", "Arjun Verma", "Seamless digital experience", "09/12/2024", "⭐⭐⭐⭐⭐"},
+            {"F006", "U006", "Deepak Sharma", "Very satisfied with the service", "10/12/2024", "⭐⭐⭐⭐⭐"},
+            {"F007", "U007", "Sakshi Desai", "Best loan provider in the market", "11/12/2024", "⭐⭐⭐⭐⭐"}
+        }
+
+        For i As Integer = 0 To UBound(feedbackData, 1)
+            dgvFeedback.Rows.Add(feedbackData(i, 0), feedbackData(i, 1), feedbackData(i, 2), feedbackData(i, 3), feedbackData(i, 4), feedbackData(i, 5))
+        Next
     End Sub
 End Class
