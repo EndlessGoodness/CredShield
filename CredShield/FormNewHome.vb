@@ -18,11 +18,15 @@ Public Class FormNewHome
 
         ' Load background image
         Try
-            ' Try multiple possible locations for the background image
+            ' Try multiple possible locations and formats for the background image
             Dim possiblePaths As String() = {
+                System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "background.jpg"),
                 System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "background.png"),
+                System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "background.jpg"),
                 System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "background.png"),
-                System.IO.Path.Combine(System.IO.Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.FullName, "background.png")
+                System.IO.Path.Combine(System.IO.Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.FullName, "background.jpg"),
+                System.IO.Path.Combine(System.IO.Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.FullName, "background.png"),
+                "D:\Coding Projects\VB net\CredShield\background.jpg"
             }
 
             For Each imagePath In possiblePaths
