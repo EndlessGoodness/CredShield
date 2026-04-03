@@ -48,74 +48,66 @@ Public Class FormLoanTypeComparison
         pnlHeader.Location = New Point(0, 0)
         Me.Controls.Add(pnlHeader)
 
+        ' Logo/Title
+        Dim lblLogo As New Label()
+        lblLogo.Text = "📱 CredShield"
+        lblLogo.Font = New Font("Segoe UI", 14, FontStyle.Bold)
+        lblLogo.ForeColor = Color.FromArgb(34, 197, 94)
+        lblLogo.AutoSize = True
+        lblLogo.Location = New Point(20, 20)
+        pnlHeader.Controls.Add(lblLogo)
+
         ' Back Button
         Dim btnBack As New Button()
         btnBack.Text = "← Back"
         btnBack.Font = New Font("Segoe UI", 10, FontStyle.Bold)
-        btnBack.BackColor = Color.FromArgb(100, 116, 139)
+        btnBack.BackColor = Color.FromArgb(34, 197, 94)
         btnBack.ForeColor = Color.White
         btnBack.FlatStyle = FlatStyle.Flat
         btnBack.FlatAppearance.BorderSize = 0
         btnBack.Size = New Size(100, 35)
-        btnBack.Location = New Point(20, 18)
+        btnBack.Location = New Point(1280, 18)
         btnBack.Cursor = Cursors.Hand
         AddHandler btnBack.Click, Sub() Me.Close()
         pnlHeader.Controls.Add(btnBack)
-
-        ' Title
-        Dim lblTitle As New Label()
-        lblTitle.Text = "Compare " & loanType
-        lblTitle.Font = New Font("Segoe UI", 16, FontStyle.Bold)
-        lblTitle.ForeColor = Color.White
-        lblTitle.AutoSize = False
-        lblTitle.TextAlign = ContentAlignment.MiddleCenter
-        lblTitle.Location = New Point(300, 15)
-        lblTitle.Size = New Size(800, 40)
-        pnlHeader.Controls.Add(lblTitle)
 
         ' Main Content Panel
         Dim pnlContent As New Panel()
         pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         pnlContent.AutoScroll = True
-        pnlContent.AutoScrollMinSize = New Size(0, 500)
+        pnlContent.AutoScrollMinSize = New Size(1400, 1200)
         pnlContent.Size = New Size(1400, 730)
         pnlContent.Location = New Point(0, 70)
         Me.Controls.Add(pnlContent)
 
+        ' Main Title
+        Dim lblTitle As New Label()
+        lblTitle.Text = "Compare " & loanType
+        lblTitle.Font = New Font("Segoe UI", 24, FontStyle.Bold)
+        lblTitle.ForeColor = Color.FromArgb(15, 23, 42)
+        lblTitle.AutoSize = False
+        lblTitle.TextAlign = ContentAlignment.MiddleCenter
+        lblTitle.Location = New Point(0, 20)
+        lblTitle.Size = New Size(1400, 40)
+        pnlContent.Controls.Add(lblTitle)
+
         ' Subtitle
         Dim lblSubtitle As New Label()
-        lblSubtitle.Text = "Select a loan offer to compare and apply"
+        lblSubtitle.Text = "Select a loan offer to compare and apply - Find the best rates from top banks"
         lblSubtitle.Font = New Font("Segoe UI", 10)
         lblSubtitle.ForeColor = Color.FromArgb(100, 116, 139)
         lblSubtitle.AutoSize = False
         lblSubtitle.TextAlign = ContentAlignment.MiddleCenter
-        lblSubtitle.Location = New Point(0, 10)
-        lblSubtitle.Size = New Size(1400, 25)
+        lblSubtitle.Location = New Point(100, 65)
+        lblSubtitle.Size = New Size(1200, 25)
         pnlContent.Controls.Add(lblSubtitle)
 
         ' Display loans as cards
-        Dim posY As Integer = 50
+        Dim posY As Integer = 110
         For Each offer In loanOffers
             CreateLoanCard(pnlContent, offer, posY)
-            posY += 260
+            posY += 280
         Next
-
-        ' Footer with action buttons
-        Dim pnlFooter As New Panel()
-        pnlFooter.BackColor = Color.FromArgb(15, 23, 42)
-        pnlFooter.Size = New Size(1400, 60)
-        pnlFooter.Location = New Point(0, 740)
-        Me.Controls.Add(pnlFooter)
-
-        Dim lblFooter As New Label()
-        lblFooter.Text = "Select a loan above to proceed with application"
-        lblFooter.Font = New Font("Segoe UI", 9)
-        lblFooter.ForeColor = Color.White
-        lblFooter.AutoSize = False
-        lblFooter.TextAlign = ContentAlignment.MiddleLeft
-        lblFooter.Location = New Point(20, 10)
-        lblFooter.Size = New Size(1000, 40)
-        pnlFooter.Controls.Add(lblFooter)
     End Sub
 
     Private Sub CreateLoanCard(parent As Panel, offer As LoanOffer, posY As Integer)
@@ -123,18 +115,30 @@ Public Class FormLoanTypeComparison
         Dim pnlCard As New Panel()
         pnlCard.BackColor = Color.White
         pnlCard.BorderStyle = BorderStyle.FixedSingle
-        pnlCard.Size = New Size(1320, 240)
-        pnlCard.Location = New Point(30, posY)
+        pnlCard.Size = New Size(1320, 250)
+        pnlCard.Location = New Point(40, posY)
         pnlCard.Cursor = Cursors.Hand
         parent.Controls.Add(pnlCard)
+
+        ' Store original and hover colors
+        Dim originalBackColor As Color = Color.White
+        Dim hoverBackColor As Color = Color.FromArgb(245, 250, 255)
+        Dim accentColor As Color = Color.FromArgb(34, 197, 94)
+
+        ' Colored Top Border
+        Dim pnlBorder As New Panel()
+        pnlBorder.BackColor = accentColor
+        pnlBorder.Size = New Size(1320, 4)
+        pnlBorder.Location = New Point(0, 0)
+        pnlCard.Controls.Add(pnlBorder)
 
         ' Company Name
         Dim lblCompany As New Label()
         lblCompany.Text = offer.CompanyName
         lblCompany.Font = New Font("Segoe UI", 14, FontStyle.Bold)
-        lblCompany.ForeColor = Color.FromArgb(34, 197, 94)
+        lblCompany.ForeColor = accentColor
         lblCompany.AutoSize = True
-        lblCompany.Location = New Point(20, 15)
+        lblCompany.Location = New Point(20, 20)
         pnlCard.Controls.Add(lblCompany)
 
         ' Rating
@@ -143,17 +147,17 @@ Public Class FormLoanTypeComparison
         lblRating.Font = New Font("Segoe UI", 9)
         lblRating.ForeColor = Color.FromArgb(249, 115, 22)
         lblRating.AutoSize = True
-        lblRating.Location = New Point(1150, 15)
+        lblRating.Location = New Point(1100, 20)
         pnlCard.Controls.Add(lblRating)
 
         ' Description
         Dim lblDesc As New Label()
         lblDesc.Text = offer.Description
-        lblDesc.Font = New Font("Segoe UI", 9)
+        lblDesc.Font = New Font("Segoe UI", 11)
         lblDesc.ForeColor = Color.FromArgb(100, 116, 139)
         lblDesc.AutoSize = False
         lblDesc.TextAlign = ContentAlignment.TopLeft
-        lblDesc.Location = New Point(20, 40)
+        lblDesc.Location = New Point(20, 50)
         lblDesc.Size = New Size(1280, 40)
         pnlCard.Controls.Add(lblDesc)
 
@@ -161,40 +165,57 @@ Public Class FormLoanTypeComparison
         Dim featuresText As String = String.Join("  •  ", offer.Features.Take(3))
         Dim lblFeatures As New Label()
         lblFeatures.Text = featuresText
-        lblFeatures.Font = New Font("Segoe UI", 8)
+        lblFeatures.Font = New Font("Segoe UI", 10)
         lblFeatures.ForeColor = Color.FromArgb(52, 73, 94)
         lblFeatures.AutoSize = False
         lblFeatures.TextAlign = ContentAlignment.TopLeft
-        lblFeatures.Location = New Point(20, 85)
-        lblFeatures.Size = New Size(1280, 50)
+        lblFeatures.Location = New Point(20, 95)
+        lblFeatures.Size = New Size(1280, 35)
         pnlCard.Controls.Add(lblFeatures)
 
         ' Key Details - 4 columns
         Dim details As String() = {
-            "Interest Rate: " & offer.InterestRateMin & "% - " & offer.InterestRateMax & "%",
-            "Tenure: " & offer.TenureMin & "-" & offer.TenureMax & " Years",
-            "Loan Amount: ₹" & Format(offer.MinAmount, "0,0") & " - ₹" & Format(offer.MaxAmount, "0,0"),
-            "Approval: " & offer.ApprovalTime
+            "Interest Rate",
+            "Tenure",
+            "Loan Amount",
+            "Approval"
+        }
+        Dim detailValues As String() = {
+            offer.InterestRateMin & "% - " & offer.InterestRateMax & "%",
+            offer.TenureMin & "-" & offer.TenureMax & " Years",
+            "₹" & Format(offer.MinAmount, "0,0") & " - ₹" & Format(offer.MaxAmount, "0,0"),
+            offer.ApprovalTime
         }
 
-        Dim detailPositions As Integer() = {20, 350, 680, 1000}
+        Dim detailPositions As Integer() = {20, 360, 700, 1050}
         For i As Integer = 0 To 3
-            Dim lblDetail As New Label()
-            lblDetail.Text = details(i)
-            lblDetail.Font = New Font("Segoe UI", 9, FontStyle.Bold)
-            lblDetail.ForeColor = Color.FromArgb(52, 73, 94)
-            lblDetail.AutoSize = False
-            lblDetail.TextAlign = ContentAlignment.TopLeft
-            lblDetail.Location = New Point(detailPositions(i), 145)
-            lblDetail.Size = New Size(320, 40)
-            pnlCard.Controls.Add(lblDetail)
+            Dim lblDetailLabel As New Label()
+            lblDetailLabel.Text = details(i)
+            lblDetailLabel.Font = New Font("Segoe UI", 9)
+            lblDetailLabel.ForeColor = Color.FromArgb(100, 116, 139)
+            lblDetailLabel.AutoSize = False
+            lblDetailLabel.TextAlign = ContentAlignment.TopLeft
+            lblDetailLabel.Location = New Point(detailPositions(i), 135)
+            lblDetailLabel.Size = New Size(320, 18)
+            pnlCard.Controls.Add(lblDetailLabel)
+
+            Dim lblDetailValue As New Label()
+            lblDetailValue.Text = detailValues(i)
+            lblDetailValue.Font = New Font("Segoe UI", 12, FontStyle.Bold)
+            lblDetailValue.ForeColor = Color.FromArgb(15, 23, 42)
+            lblDetailValue.AutoSize = False
+            lblDetailValue.TextAlign = ContentAlignment.TopLeft
+            lblDetailValue.Location = New Point(detailPositions(i), 156)
+            lblDetailValue.Size = New Size(320, 35)
+            pnlCard.Controls.Add(lblDetailValue)
         Next
 
         ' Action Row with buttons
         Dim pnlActions As New Panel()
-        pnlActions.BackColor = Color.FromArgb(245, 245, 245)
-        pnlActions.Size = New Size(1320, 45)
-        pnlActions.Location = New Point(0, 190)
+        pnlActions.BackColor = Color.FromArgb(248, 249, 250)
+        pnlActions.BorderStyle = BorderStyle.FixedSingle
+        pnlActions.Size = New Size(1320, 50)
+        pnlActions.Location = New Point(0, 200)
         pnlCard.Controls.Add(pnlActions)
 
         ' Apply Button
@@ -205,12 +226,20 @@ Public Class FormLoanTypeComparison
         btnApply.ForeColor = Color.White
         btnApply.FlatStyle = FlatStyle.Flat
         btnApply.FlatAppearance.BorderSize = 0
-        btnApply.Size = New Size(120, 35)
+        btnApply.Size = New Size(130, 35)
         btnApply.Location = New Point(20, 8)
         btnApply.Cursor = Cursors.Hand
         Dim offerCopy = offer
         AddHandler btnApply.Click, Sub(sender As Object, e As EventArgs) ApplyForLoan(offerCopy)
         pnlActions.Controls.Add(btnApply)
+
+        ' Hover effects for Apply button
+        AddHandler btnApply.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                            btnApply.BackColor = Color.FromArgb(25, 180, 80)
+                                        End Sub
+        AddHandler btnApply.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                            btnApply.BackColor = Color.FromArgb(34, 197, 94)
+                                        End Sub
 
         ' Wishlist Button
         Dim btnWishlist As New Button()
@@ -221,13 +250,33 @@ Public Class FormLoanTypeComparison
         btnWishlist.FlatStyle = FlatStyle.Flat
         btnWishlist.FlatAppearance.BorderSize = 0
         btnWishlist.Size = New Size(150, 35)
-        btnWishlist.Location = New Point(150, 8)
+        btnWishlist.Location = New Point(160, 8)
         btnWishlist.Cursor = Cursors.Hand
         AddHandler btnWishlist.Click, Sub(sender As Object, e As EventArgs) AddToWishlist(offerCopy, btnWishlist)
         pnlActions.Controls.Add(btnWishlist)
 
-        ' Click handlers for card selection
-        AddHandler pnlCard.Click, Sub(sender As Object, e As EventArgs) SelectLoan(offerCopy)
+        ' Hover effects for Wishlist button
+        AddHandler btnWishlist.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                               btnWishlist.BackColor = Color.FromArgb(147, 60, 215)
+                                           End Sub
+        AddHandler btnWishlist.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                               btnWishlist.BackColor = Color.FromArgb(168, 85, 247)
+                                           End Sub
+
+        ' Card hover effects
+        AddHandler pnlCard.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                           pnlCard.BackColor = hoverBackColor
+                                           pnlCard.BorderStyle = BorderStyle.FixedSingle
+                                           pnlCard.Size = New Size(1325, 255)
+                                           pnlCard.Location = New Point(37, posY - 2)
+                                       End Sub
+
+        AddHandler pnlCard.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                           pnlCard.BackColor = originalBackColor
+                                           pnlCard.BorderStyle = BorderStyle.FixedSingle
+                                           pnlCard.Size = New Size(1320, 250)
+                                           pnlCard.Location = New Point(40, posY)
+                                       End Sub
     End Sub
 
     Private Sub SelectLoan(loan As LoanOffer)

@@ -9,6 +9,15 @@ Public Class FormAdminDashboard
     Private dgvLoanServices As DataGridView
     Private pnlStats As Panel
 
+    ' Content panels
+    Private pnlDashboardContent As Panel
+    Private pnlAppsContent As Panel
+    Private pnlUsersContent As Panel
+    Private pnlQueriesContent As Panel
+    Private pnlFeedbackContent As Panel
+    Private pnlServicesContent As Panel
+    Private contentPanels As List(Of Panel)
+
     Public Sub New()
         MyBase.New()
         Me.Text = "CredShield - Admin Dashboard"
@@ -30,12 +39,20 @@ Public Class FormAdminDashboard
         pnlHeader.Location = New Point(0, 0)
         Me.Controls.Add(pnlHeader)
 
+        Dim lblLogo As New Label()
+        lblLogo.Text = "📱 CredShield"
+        lblLogo.Font = New Font("Segoe UI", 14, FontStyle.Bold)
+        lblLogo.ForeColor = Color.FromArgb(34, 197, 94)
+        lblLogo.AutoSize = True
+        lblLogo.Location = New Point(20, 20)
+        pnlHeader.Controls.Add(lblLogo)
+
         Dim lblTitle As New Label()
-        lblTitle.Text = "👨‍💼 CredShield Admin Dashboard"
-        lblTitle.Font = New Font("Segoe UI", 16, FontStyle.Bold)
-        lblTitle.ForeColor = Color.FromArgb(34, 197, 94)
+        lblTitle.Text = "Admin Dashboard"
+        lblTitle.Font = New Font("Segoe UI", 14, FontStyle.Bold)
+        lblTitle.ForeColor = Color.White
         lblTitle.AutoSize = True
-        lblTitle.Location = New Point(20, 20)
+        lblTitle.Location = New Point(200, 20)
         pnlHeader.Controls.Add(lblTitle)
 
         Dim btnLogout As New Button()
@@ -55,49 +72,155 @@ Public Class FormAdminDashboard
                                     End Sub
         pnlHeader.Controls.Add(btnLogout)
 
-        ' Create Tab Control
-        tcTabs = New TabControl()
-        tcTabs.Location = New Point(10, 80)
-        tcTabs.Size = New Size(1380, 810)
-        tcTabs.Font = New Font("Segoe UI", 10)
-        Me.Controls.Add(tcTabs)
+        ' Create Left Navigation Panel
+        Dim pnlNav As New Panel()
+        pnlNav.BackColor = Color.FromArgb(52, 73, 94)
+        pnlNav.Size = New Size(250, 830)
+        pnlNav.Location = New Point(0, 70)
+        pnlNav.AutoScroll = True
+        Me.Controls.Add(pnlNav)
 
-        ' Tab 1: Dashboard Overview
-        Dim tabDashboard As New TabPage("📊 Dashboard Overview")
-        tcTabs.TabPages.Add(tabDashboard)
-        BuildDashboardTab(tabDashboard)
+        ' Navigation Title
+        Dim lblNav As New Label()
+        lblNav.Text = "Sections"
+        lblNav.Font = New Font("Segoe UI", 12, FontStyle.Bold)
+        lblNav.ForeColor = Color.White
+        lblNav.Location = New Point(20, 15)
+        lblNav.AutoSize = True
+        pnlNav.Controls.Add(lblNav)
 
-        ' Tab 2: Loan Applications
-        Dim tabApplications As New TabPage("📋 Loan Applications")
-        tcTabs.TabPages.Add(tabApplications)
-        BuildApplicationsTab(tabApplications)
+        ' Navigation Buttons
+        Dim navButtons As New List(Of Button)()
+        Dim navLabels As String() = {"📊 Dashboard Overview", "📋 Loan Applications", "👥 User Management", "❓ Client Queries", "💬 Feedback", "⚙️ My Services"}
+        Dim posY As Integer = 50
 
-        ' Tab 3: User Management
-        Dim tabUsers As New TabPage("👥 User Management")
-        tcTabs.TabPages.Add(tabUsers)
-        BuildUsersTab(tabUsers)
+        For idx As Integer = 0 To navLabels.Length - 1
+            Dim btnNav As New Button()
+            btnNav.Text = navLabels(idx)
+            btnNav.Font = New Font("Segoe UI", 10)
+            btnNav.BackColor = Color.FromArgb(52, 73, 94)
+            btnNav.ForeColor = Color.White
+            btnNav.FlatStyle = FlatStyle.Flat
+            btnNav.FlatAppearance.BorderSize = 0
+            btnNav.Size = New Size(230, 40)
+            btnNav.Location = New Point(10, posY)
+            btnNav.Cursor = Cursors.Hand
+            btnNav.TextAlign = ContentAlignment.MiddleLeft
+            Dim currentIndex As Integer = idx
+            AddHandler btnNav.Click, Sub() ShowSection(currentIndex, navButtons, pnlNav)
+            AddHandler btnNav.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                              btnNav.BackColor = Color.FromArgb(34, 197, 94)
+                                          End Sub
+            AddHandler btnNav.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                              If currentIndex <> GetCurrentSection() Then
+                                                  btnNav.BackColor = Color.FromArgb(52, 73, 94)
+                                              End If
+                                          End Sub
+            pnlNav.Controls.Add(btnNav)
+            navButtons.Add(btnNav)
+            posY += 50
+        Next
 
-        ' Tab 4: Client Queries
-        Dim tabQueries As New TabPage("❓ Client Queries")
-        tcTabs.TabPages.Add(tabQueries)
-        BuildQueriesTab(tabQueries)
+        ' Create Main Content Panel
+        Dim pnlContent As New Panel()
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlContent.Size = New Size(1150, 830)
+        pnlContent.Location = New Point(250, 70)
+        pnlContent.AutoScroll = True
+        pnlContent.AutoScrollMinSize = New Size(0, 700)
+        Me.Controls.Add(pnlContent)
 
-        ' Tab 5: Feedback
-        Dim tabFeedback As New TabPage("💬 Feedback")
-        tcTabs.TabPages.Add(tabFeedback)
-        BuildFeedbackTab(tabFeedback)
+        ' Initialize content panels list
+        contentPanels = New List(Of Panel)()
 
-        ' Tab 6: My Services
-        Dim tabServices As New TabPage("⚙️ My Services")
-        tcTabs.TabPages.Add(tabServices)
-        BuildServicesTab(tabServices)
+        ' Store panels for each section
+        pnlDashboardContent = New Panel()
+        pnlDashboardContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlDashboardContent.Dock = DockStyle.Fill
+        pnlDashboardContent.Visible = True
+        pnlContent.Controls.Add(pnlDashboardContent)
+        contentPanels.Add(pnlDashboardContent)
+        BuildDashboardTab(pnlDashboardContent)
+
+        pnlAppsContent = New Panel()
+        pnlAppsContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlAppsContent.Dock = DockStyle.Fill
+        pnlAppsContent.Visible = False
+        pnlContent.Controls.Add(pnlAppsContent)
+        contentPanels.Add(pnlAppsContent)
+        BuildApplicationsTab(pnlAppsContent)
+
+        pnlUsersContent = New Panel()
+        pnlUsersContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlUsersContent.Dock = DockStyle.Fill
+        pnlUsersContent.Visible = False
+        pnlContent.Controls.Add(pnlUsersContent)
+        contentPanels.Add(pnlUsersContent)
+        BuildUsersTab(pnlUsersContent)
+
+        pnlQueriesContent = New Panel()
+        pnlQueriesContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlQueriesContent.Dock = DockStyle.Fill
+        pnlQueriesContent.Visible = False
+        pnlContent.Controls.Add(pnlQueriesContent)
+        contentPanels.Add(pnlQueriesContent)
+        BuildQueriesTab(pnlQueriesContent)
+
+        pnlFeedbackContent = New Panel()
+        pnlFeedbackContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlFeedbackContent.Dock = DockStyle.Fill
+        pnlFeedbackContent.Visible = False
+        pnlContent.Controls.Add(pnlFeedbackContent)
+        contentPanels.Add(pnlFeedbackContent)
+        BuildFeedbackTab(pnlFeedbackContent)
+
+        pnlServicesContent = New Panel()
+        pnlServicesContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlServicesContent.Dock = DockStyle.Fill
+        pnlServicesContent.Visible = False
+        pnlContent.Controls.Add(pnlServicesContent)
+        contentPanels.Add(pnlServicesContent)
+        BuildServicesTab(pnlServicesContent)
+
+        ' Set first button as active
+        navButtons(0).BackColor = Color.FromArgb(34, 197, 94)
     End Sub
 
-    Private Sub BuildDashboardTab(tab As TabPage)
+    Private currentSection As Integer = 0
+
+    Private Sub ShowSection(index As Integer, navButtons As List(Of Button), pnlNav As Panel)
+        currentSection = index
+
+        ' Hide all content panels
+        For Each pnl In contentPanels
+            pnl.Visible = False
+        Next
+
+        ' Show selected panel
+        If index >= 0 AndAlso index < contentPanels.Count Then
+            contentPanels(index).Visible = True
+        End If
+
+        ' Update button colors
+        For i As Integer = 0 To navButtons.Count - 1
+            If i = index Then
+                navButtons(i).BackColor = Color.FromArgb(34, 197, 94)
+            Else
+                navButtons(i).BackColor = Color.FromArgb(52, 73, 94)
+            End If
+        Next
+    End Sub
+
+    Private Function GetCurrentSection() As Integer
+        Return currentSection
+    End Function
+
+    Private Sub BuildDashboardTab(tab As Panel)
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
         pnlContent.AutoScrollMinSize = New Size(0, 700)
         pnlContent.Dock = DockStyle.Fill
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         tab.Controls.Add(pnlContent)
 
         ' Statistics Section
@@ -132,7 +255,7 @@ Public Class FormAdminDashboard
         For Each stat In statData
             CreateStatCard(pnlContent, stat.Key, stat.Value, posX, posY)
             posX += 210
-            If posX > 1200 Then
+            If posX > 1000 Then
                 posX = 20
                 posY += 130
             End If
@@ -151,12 +274,17 @@ Public Class FormAdminDashboard
         posY += 40
         Dim dgvSummary As New DataGridView()
         dgvSummary.Location = New Point(20, posY)
-        dgvSummary.Size = New Size(1340, 200)
-        dgvSummary.Font = New Font("Segoe UI", 9)
+        dgvSummary.Size = New Size(1100, 200)
+        dgvSummary.Font = New Font("Segoe UI", 10)
         dgvSummary.BackgroundColor = Color.White
         dgvSummary.BorderStyle = BorderStyle.FixedSingle
         dgvSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvSummary.AllowUserToAddRows = False
+        dgvSummary.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvSummary.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvSummary.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 11, FontStyle.Bold)
+        dgvSummary.ColumnHeadersHeight = 35
+        dgvSummary.RowTemplate.Height = 28
         pnlContent.Controls.Add(dgvSummary)
 
         dgvSummary.Columns.Add("LoanType", "Loan Type")
@@ -168,10 +296,29 @@ Public Class FormAdminDashboard
         dgvSummary.Rows.Add("Home Loan", "2", "3", "0", "5")
         dgvSummary.Rows.Add("Personal Loan", "1", "0", "1", "2")
         dgvSummary.Rows.Add("Education Loan", "0", "0", "0", "1")
-        dgvSummary.Rows.Add("Total", "3", "3", "1", "7")
+        Dim totalRowIndex As Integer = dgvSummary.Rows.Add("Total", "3", "3", "1", "7")
+
+        ' Style alternating rows
+        For i As Integer = 0 To dgvSummary.Rows.Count - 1
+            If i < dgvSummary.Rows.Count - 1 Then
+                ' Alternating row colors for data rows
+                If i Mod 2 = 0 Then
+                    dgvSummary.Rows(i).DefaultCellStyle.BackColor = Color.White
+                Else
+                    dgvSummary.Rows(i).DefaultCellStyle.BackColor = Color.FromArgb(245, 250, 255)
+                End If
+                dgvSummary.Rows(i).DefaultCellStyle.ForeColor = Color.FromArgb(15, 23, 42)
+                dgvSummary.Rows(i).DefaultCellStyle.Font = New Font("Segoe UI", 10)
+            Else
+                ' Total row styling
+                dgvSummary.Rows(i).DefaultCellStyle.BackColor = Color.FromArgb(34, 197, 94)
+                dgvSummary.Rows(i).DefaultCellStyle.ForeColor = Color.White
+                dgvSummary.Rows(i).DefaultCellStyle.Font = New Font("Segoe UI", 11, FontStyle.Bold)
+            End If
+        Next
 
         For i As Integer = 0 To dgvSummary.Columns.Count - 1
-            dgvSummary.Columns(i).Width = 250
+            dgvSummary.Columns(i).Width = 210
         Next
     End Sub
 
@@ -183,13 +330,24 @@ Public Class FormAdminDashboard
         pnl.Location = New Point(x, y)
         parent.Controls.Add(pnl)
 
+        ' Store original and hover colors
+        Dim originalBackColor As Color = Color.White
+        Dim hoverBackColor As Color = Color.FromArgb(245, 250, 255)
+
+        ' Colored Top Border
+        Dim pnlBorder As New Panel()
+        pnlBorder.BackColor = Color.FromArgb(34, 197, 94)
+        pnlBorder.Size = New Size(200, 4)
+        pnlBorder.Location = New Point(0, 0)
+        pnl.Controls.Add(pnlBorder)
+
         Dim lblTitle As New Label()
         lblTitle.Text = title
         lblTitle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         lblTitle.ForeColor = Color.FromArgb(52, 73, 94)
         lblTitle.AutoSize = False
         lblTitle.TextAlign = ContentAlignment.TopLeft
-        lblTitle.Location = New Point(10, 10)
+        lblTitle.Location = New Point(10, 15)
         lblTitle.Size = New Size(180, 30)
         pnl.Controls.Add(lblTitle)
 
@@ -199,15 +357,28 @@ Public Class FormAdminDashboard
         lblValue.ForeColor = Color.FromArgb(34, 197, 94)
         lblValue.AutoSize = False
         lblValue.TextAlign = ContentAlignment.MiddleCenter
-        lblValue.Location = New Point(10, 40)
-        lblValue.Size = New Size(180, 40)
+        lblValue.Location = New Point(10, 45)
+        lblValue.Size = New Size(180, 50)
         pnl.Controls.Add(lblValue)
+
+        ' Hover effects
+        AddHandler pnl.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                       pnl.BackColor = hoverBackColor
+                                       pnl.Size = New Size(205, 115)
+                                       pnl.Location = New Point(x - 2, y - 2)
+                                   End Sub
+
+        AddHandler pnl.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                       pnl.BackColor = originalBackColor
+                                       pnl.Size = New Size(200, 110)
+                                       pnl.Location = New Point(x, y)
+                                   End Sub
     End Sub
 
-    Private Sub BuildApplicationsTab(tab As TabPage)
+    Private Sub BuildApplicationsTab(tab As Panel)
         Dim pnlTop As New Panel()
-        pnlTop.BackColor = Color.FromArgb(52, 73, 94)
-        pnlTop.Size = New Size(1360, 60)
+        pnlTop.BackColor = Color.FromArgb(15, 23, 42)
+        pnlTop.Size = New Size(1150, 60)
         pnlTop.Location = New Point(0, 0)
         tab.Controls.Add(pnlTop)
 
@@ -216,60 +387,100 @@ Public Class FormAdminDashboard
         lblTitle.Font = New Font("Segoe UI", 11, FontStyle.Bold)
         lblTitle.ForeColor = Color.White
         lblTitle.AutoSize = True
-        lblTitle.Location = New Point(15, 18)
+        lblTitle.Location = New Point(20, 18)
         pnlTop.Controls.Add(lblTitle)
 
         Dim btnAll As New Button()
         btnAll.Text = "📋 All"
-        btnAll.BackColor = Color.FromArgb(149, 165, 166)
+        btnAll.BackColor = Color.FromArgb(100, 116, 139)
         btnAll.ForeColor = Color.White
         btnAll.FlatStyle = FlatStyle.Flat
+        btnAll.FlatAppearance.BorderSize = 0
         btnAll.Size = New Size(100, 35)
-        btnAll.Location = New Point(15, 18)
+        btnAll.Location = New Point(220, 12)
         btnAll.Cursor = Cursors.Hand
         AddHandler btnAll.Click, Sub() LoadApplications("")
         pnlTop.Controls.Add(btnAll)
 
+        ' Hover effect for All button
+        AddHandler btnAll.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                          btnAll.BackColor = Color.FromArgb(80, 96, 119)
+                                      End Sub
+        AddHandler btnAll.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                          btnAll.BackColor = Color.FromArgb(100, 116, 139)
+                                      End Sub
+
         Dim btnPending As New Button()
         btnPending.Text = "⏳ Pending"
-        btnPending.BackColor = Color.FromArgb(241, 196, 15)
+        btnPending.BackColor = Color.FromArgb(249, 115, 22)
         btnPending.ForeColor = Color.White
         btnPending.FlatStyle = FlatStyle.Flat
+        btnPending.FlatAppearance.BorderSize = 0
         btnPending.Size = New Size(100, 35)
-        btnPending.Location = New Point(125, 18)
+        btnPending.Location = New Point(330, 12)
         btnPending.Cursor = Cursors.Hand
         AddHandler btnPending.Click, Sub() LoadApplications("Pending")
         pnlTop.Controls.Add(btnPending)
 
+        ' Hover effect for Pending button
+        AddHandler btnPending.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                              btnPending.BackColor = Color.FromArgb(220, 100, 10)
+                                          End Sub
+        AddHandler btnPending.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                              btnPending.BackColor = Color.FromArgb(249, 115, 22)
+                                          End Sub
+
         Dim btnApproved As New Button()
         btnApproved.Text = "✅ Approved"
-        btnApproved.BackColor = Color.FromArgb(46, 204, 113)
+        btnApproved.BackColor = Color.FromArgb(34, 197, 94)
         btnApproved.ForeColor = Color.White
         btnApproved.FlatStyle = FlatStyle.Flat
+        btnApproved.FlatAppearance.BorderSize = 0
         btnApproved.Size = New Size(110, 35)
-        btnApproved.Location = New Point(235, 18)
+        btnApproved.Location = New Point(440, 12)
         btnApproved.Cursor = Cursors.Hand
         AddHandler btnApproved.Click, Sub() LoadApplications("Approved")
         pnlTop.Controls.Add(btnApproved)
 
+        ' Hover effect for Approved button
+        AddHandler btnApproved.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                               btnApproved.BackColor = Color.FromArgb(25, 180, 80)
+                                           End Sub
+        AddHandler btnApproved.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                               btnApproved.BackColor = Color.FromArgb(34, 197, 94)
+                                           End Sub
+
         Dim btnRejected As New Button()
         btnRejected.Text = "❌ Rejected"
-        btnRejected.BackColor = Color.FromArgb(231, 76, 60)
+        btnRejected.BackColor = Color.FromArgb(239, 68, 68)
         btnRejected.ForeColor = Color.White
         btnRejected.FlatStyle = FlatStyle.Flat
+        btnRejected.FlatAppearance.BorderSize = 0
         btnRejected.Size = New Size(100, 35)
-        btnRejected.Location = New Point(355, 18)
+        btnRejected.Location = New Point(560, 12)
         btnRejected.Cursor = Cursors.Hand
         AddHandler btnRejected.Click, Sub() LoadApplications("Rejected")
         pnlTop.Controls.Add(btnRejected)
 
+        ' Hover effect for Rejected button
+        AddHandler btnRejected.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                               btnRejected.BackColor = Color.FromArgb(210, 50, 50)
+                                           End Sub
+        AddHandler btnRejected.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                               btnRejected.BackColor = Color.FromArgb(239, 68, 68)
+                                           End Sub
+
         dgvApplications = New DataGridView()
         dgvApplications.Location = New Point(10, 70)
-        dgvApplications.Size = New Size(1360, 710)
+        dgvApplications.Size = New Size(1130, 750)
         dgvApplications.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvApplications.AllowUserToAddRows = False
         dgvApplications.Font = New Font("Segoe UI", 9)
         dgvApplications.BackgroundColor = Color.White
+        dgvApplications.BorderStyle = BorderStyle.FixedSingle
+        dgvApplications.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvApplications.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvApplications.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         tab.Controls.Add(dgvApplications)
 
         dgvApplications.Columns.Add("ApplicationId", "Application ID")
@@ -282,7 +493,7 @@ Public Class FormAdminDashboard
         dgvApplications.Columns.Add("Status", "Status")
 
         For i As Integer = 0 To dgvApplications.Columns.Count - 1
-            dgvApplications.Columns(i).Width = 160
+            dgvApplications.Columns(i).Width = 140
         Next
 
         LoadApplicationsWithDummyData()
@@ -308,6 +519,8 @@ Public Class FormAdminDashboard
             Next
             dgvApplications.Rows.Add(row)
         Next
+
+        ColorizeApplicationRows()
     End Sub
 
     Private Sub LoadApplications(status As String)
@@ -332,22 +545,55 @@ Public Class FormAdminDashboard
                 dgvApplications.Rows.Add(row)
             End If
         Next
+
+        ColorizeApplicationRows()
     End Sub
 
-    Private Sub BuildUsersTab(tab As TabPage)
+    Private Sub ColorizeApplicationRows()
+        ' Color rows based on application status
+        For Each row As DataGridViewRow In dgvApplications.Rows
+            Dim status As String = row.Cells("Status").Value.ToString()
+
+            Select Case status
+                Case "Approved"
+                    ' Green background for approved applications
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(200, 240, 220)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 100, 50)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+
+                Case "Pending"
+                    ' Yellow/Orange background for pending applications
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 245, 200)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(120, 85, 0)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+
+                Case "Rejected"
+                    ' Red background for rejected applications
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 200, 200)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(150, 0, 0)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+            End Select
+        Next
+    End Sub
+
+    Private Sub BuildUsersTab(tab As Panel)
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
         pnlContent.Dock = DockStyle.Fill
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         tab.Controls.Add(pnlContent)
 
         dgvUsers = New DataGridView()
         dgvUsers.Location = New Point(10, 10)
-        dgvUsers.Size = New Size(1340, 770)
+        dgvUsers.Size = New Size(1120, 800)
         dgvUsers.Font = New Font("Segoe UI", 9)
         dgvUsers.BackgroundColor = Color.White
         dgvUsers.BorderStyle = BorderStyle.FixedSingle
         dgvUsers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvUsers.AllowUserToAddRows = False
+        dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvUsers.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         pnlContent.Controls.Add(dgvUsers)
 
         dgvUsers.Columns.Add("UserId", "User ID")
@@ -362,24 +608,28 @@ Public Class FormAdminDashboard
         LoadDummyUsersData()
 
         For i As Integer = 0 To dgvUsers.Columns.Count - 1
-            dgvUsers.Columns(i).Width = 190
+            dgvUsers.Columns(i).Width = 155
         Next
     End Sub
 
-    Private Sub BuildQueriesTab(tab As TabPage)
+    Private Sub BuildQueriesTab(tab As Panel)
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
         pnlContent.Dock = DockStyle.Fill
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         tab.Controls.Add(pnlContent)
 
         dgvQueries = New DataGridView()
         dgvQueries.Location = New Point(10, 10)
-        dgvQueries.Size = New Size(1340, 770)
+        dgvQueries.Size = New Size(1120, 800)
         dgvQueries.Font = New Font("Segoe UI", 9)
         dgvQueries.BackgroundColor = Color.White
         dgvQueries.BorderStyle = BorderStyle.FixedSingle
         dgvQueries.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvQueries.AllowUserToAddRows = False
+        dgvQueries.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvQueries.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvQueries.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         pnlContent.Controls.Add(dgvQueries)
 
         dgvQueries.Columns.Add("QueryId", "Query ID")
@@ -393,27 +643,31 @@ Public Class FormAdminDashboard
         LoadDummyQueriesData()
 
         dgvQueries.Columns("QueryId").Width = 80
-        dgvQueries.Columns("UserId").Width = 80
-        dgvQueries.Columns("UserName").Width = 150
-        dgvQueries.Columns("Query").Width = 500
-        dgvQueries.Columns("Date").Width = 120
-        dgvQueries.Columns("Status").Width = 120
+        dgvQueries.Columns("UserId").Width = 70
+        dgvQueries.Columns("UserName").Width = 130
+        dgvQueries.Columns("Query").Width = 520
+        dgvQueries.Columns("Date").Width = 110
+        dgvQueries.Columns("Status").Width = 100
     End Sub
 
-    Private Sub BuildFeedbackTab(tab As TabPage)
+    Private Sub BuildFeedbackTab(tab As Panel)
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
         pnlContent.Dock = DockStyle.Fill
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         tab.Controls.Add(pnlContent)
 
         dgvFeedback = New DataGridView()
         dgvFeedback.Location = New Point(10, 10)
-        dgvFeedback.Size = New Size(1340, 770)
+        dgvFeedback.Size = New Size(1120, 800)
         dgvFeedback.Font = New Font("Segoe UI", 9)
         dgvFeedback.BackgroundColor = Color.White
         dgvFeedback.BorderStyle = BorderStyle.FixedSingle
         dgvFeedback.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvFeedback.AllowUserToAddRows = False
+        dgvFeedback.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvFeedback.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvFeedback.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         pnlContent.Controls.Add(dgvFeedback)
 
         dgvFeedback.Columns.Add("FeedbackId", "Feedback ID")
@@ -427,37 +681,70 @@ Public Class FormAdminDashboard
         LoadDummyFeedbackData()
 
         dgvFeedback.Columns("FeedbackId").Width = 100
-        dgvFeedback.Columns("UserId").Width = 80
-        dgvFeedback.Columns("UserName").Width = 150
-        dgvFeedback.Columns("Feedback").Width = 600
-        dgvFeedback.Columns("Date").Width = 120
+        dgvFeedback.Columns("UserId").Width = 70
+        dgvFeedback.Columns("UserName").Width = 130
+        dgvFeedback.Columns("Feedback").Width = 570
+        dgvFeedback.Columns("Date").Width = 110
         dgvFeedback.Columns("Rating").Width = 100
     End Sub
 
-    Private Sub BuildServicesTab(tab As TabPage)
+    Private Sub ColorizeQueriesRows()
+        ' Color rows based on query status
+        For Each row As DataGridViewRow In dgvQueries.Rows
+            Dim status As String = row.Cells("Status").Value.ToString()
+
+            Select Case status
+                Case "Answered"
+                    ' Green background for answered queries
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(200, 240, 220)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 100, 50)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+
+                Case "Pending"
+                    ' Yellow/Orange background for pending queries
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 245, 200)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(120, 85, 0)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+            End Select
+        Next
+    End Sub
+
+    Private Sub BuildServicesTab(tab As Panel)
         Dim pnlContent As New Panel()
         pnlContent.AutoScroll = True
         pnlContent.AutoScrollMinSize = New Size(0, 600)
         pnlContent.Dock = DockStyle.Fill
+        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
         tab.Controls.Add(pnlContent)
 
         Dim lblTitle As New Label()
-        lblTitle.Text = "⚙️ Manage Loan Services - Edit Interest Rates, Fees & Terms"
-        lblTitle.Font = New Font("Segoe UI", 14, FontStyle.Bold)
+        lblTitle.Text = "⚙️ Manage Loan Services"
+        lblTitle.Font = New Font("Segoe UI", 16, FontStyle.Bold)
         lblTitle.ForeColor = Color.FromArgb(15, 23, 42)
         lblTitle.Location = New Point(20, 20)
         lblTitle.AutoSize = True
         pnlContent.Controls.Add(lblTitle)
 
+        Dim lblSubtitle As New Label()
+        lblSubtitle.Text = "Edit Interest Rates, Processing Fees, Loan Amounts & Approval Timeline"
+        lblSubtitle.Font = New Font("Segoe UI", 10)
+        lblSubtitle.ForeColor = Color.FromArgb(100, 116, 139)
+        lblSubtitle.Location = New Point(20, 50)
+        lblSubtitle.AutoSize = True
+        pnlContent.Controls.Add(lblSubtitle)
+
         dgvLoanServices = New DataGridView()
-        dgvLoanServices.Location = New Point(20, 60)
-        dgvLoanServices.Size = New Size(1320, 450)
+        dgvLoanServices.Location = New Point(20, 80)
+        dgvLoanServices.Size = New Size(1100, 450)
         dgvLoanServices.Font = New Font("Segoe UI", 9)
         dgvLoanServices.BackgroundColor = Color.White
         dgvLoanServices.BorderStyle = BorderStyle.FixedSingle
         dgvLoanServices.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvLoanServices.AllowUserToAddRows = False
         dgvLoanServices.ReadOnly = False
+        dgvLoanServices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
+        dgvLoanServices.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvLoanServices.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
         pnlContent.Controls.Add(dgvLoanServices)
 
         dgvLoanServices.Columns.Add("ServiceId", "Service ID")
@@ -486,15 +773,15 @@ Public Class FormAdminDashboard
             dgvLoanServices.Rows.Add(serviceData(i, 0), serviceData(i, 1), serviceData(i, 2), serviceData(i, 3), serviceData(i, 4), serviceData(i, 5), serviceData(i, 6), serviceData(i, 7), serviceData(i, 8))
         Next
 
-        dgvLoanServices.Columns("ServiceId").Width = 80
-        dgvLoanServices.Columns("LoanType").Width = 100
-        dgvLoanServices.Columns("Company").Width = 120
-        dgvLoanServices.Columns("MinInterest").Width = 120
-        dgvLoanServices.Columns("MaxInterest").Width = 120
-        dgvLoanServices.Columns("ProcessingFee").Width = 120
-        dgvLoanServices.Columns("MinAmount").Width = 120
-        dgvLoanServices.Columns("MaxAmount").Width = 120
-        dgvLoanServices.Columns("ApprovalDays").Width = 100
+        dgvLoanServices.Columns("ServiceId").Width = 70
+        dgvLoanServices.Columns("LoanType").Width = 90
+        dgvLoanServices.Columns("Company").Width = 100
+        dgvLoanServices.Columns("MinInterest").Width = 100
+        dgvLoanServices.Columns("MaxInterest").Width = 100
+        dgvLoanServices.Columns("ProcessingFee").Width = 100
+        dgvLoanServices.Columns("MinAmount").Width = 100
+        dgvLoanServices.Columns("MaxAmount").Width = 100
+        dgvLoanServices.Columns("ApprovalDays").Width = 90
 
         ' Action Buttons
         Dim btnSave As New Button()
@@ -662,6 +949,8 @@ Public Class FormAdminDashboard
         For i As Integer = 0 To UBound(queryData, 1)
             dgvQueries.Rows.Add(queryData(i, 0), queryData(i, 1), queryData(i, 2), queryData(i, 3), queryData(i, 4), queryData(i, 5))
         Next
+
+        ColorizeQueriesRows()
     End Sub
 
     Private Sub LoadDummyFeedbackData()

@@ -2,7 +2,7 @@ Public Class FormClientHome
     Inherits Form
 
     Private bgImage As Image
-    Private bgOpacity As Single = 0.3F
+    Private bgOpacity As Single = 0.1F
     Private currentUserId As Integer = 1
 
     Public Sub New()
@@ -137,6 +137,12 @@ Public Class FormClientHome
             pnlCard.Cursor = Cursors.Hand
             pnlContent.Controls.Add(pnlCard)
 
+            ' Store original and hover colors
+            Dim originalBackColor As Color = Color.White
+            Dim hoverBackColor As Color = Color.FromArgb(245, 250, 255)
+            Dim originalBorderColor As Color = Color.FromArgb(200, 200, 200)
+            Dim hoverBorderColor As Color = loanColors(i)
+
             ' Colored Border
             Dim pnlBorder As New Panel()
             pnlBorder.BackColor = loanColors(i)
@@ -190,6 +196,40 @@ Public Class FormClientHome
             Dim loanTypeIndex As Integer = i
             AddHandler btnCompare.Click, Sub(sender As Object, e As EventArgs) OpenLoanComparison(loanTypes(loanTypeIndex))
             pnlCard.Controls.Add(btnCompare)
+
+            ' Hover effects for the card
+            AddHandler pnlCard.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                               pnlCard.BackColor = hoverBackColor
+                                               pnlCard.BorderStyle = BorderStyle.FixedSingle
+                                               btnCompare.BackColor = Color.FromArgb(loanColors(loanTypeIndex).A - 30, Math.Max(loanColors(loanTypeIndex).R - 30, 0), Math.Max(loanColors(loanTypeIndex).G - 30, 0), Math.Max(loanColors(loanTypeIndex).B - 30, 0))
+                                               ' Scale up effect
+                                               pnlCard.Size = New Size(315, 190)
+                                               pnlCard.Location = New Point(50 + (loanTypeIndex * 340) - 2, 165)
+                                           End Sub
+
+            AddHandler pnlCard.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                               pnlCard.BackColor = originalBackColor
+                                               pnlCard.BorderStyle = BorderStyle.FixedSingle
+                                               btnCompare.BackColor = loanColors(loanTypeIndex)
+                                               ' Scale back
+                                               pnlCard.Size = New Size(310, 180)
+                                               pnlCard.Location = New Point(50 + (loanTypeIndex * 340), 170)
+                                           End Sub
+
+            ' Hover effects for button
+            AddHandler btnCompare.MouseEnter, Sub(sender As Object, e As EventArgs)
+                                                  pnlCard.BackColor = hoverBackColor
+                                                  btnCompare.BackColor = Color.FromArgb(Math.Max(loanColors(loanTypeIndex).R - 30, 0), Math.Max(loanColors(loanTypeIndex).G - 30, 0), Math.Max(loanColors(loanTypeIndex).B - 30, 0))
+                                                  pnlCard.Size = New Size(315, 190)
+                                                  pnlCard.Location = New Point(50 + (loanTypeIndex * 340) - 2, 165)
+                                              End Sub
+
+            AddHandler btnCompare.MouseLeave, Sub(sender As Object, e As EventArgs)
+                                                  pnlCard.BackColor = originalBackColor
+                                                  btnCompare.BackColor = loanColors(loanTypeIndex)
+                                                  pnlCard.Size = New Size(310, 180)
+                                                  pnlCard.Location = New Point(50 + (loanTypeIndex * 340), 170)
+                                              End Sub
 
             ' Click handlers for card
             AddHandler pnlCard.Click, Sub(sender As Object, e As EventArgs) OpenLoanComparison(loanTypes(loanTypeIndex))
