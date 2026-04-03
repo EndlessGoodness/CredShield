@@ -106,9 +106,9 @@ Public Class FormNewHome
         pnlDivider.Location = New Point(0, 159)
         Me.Controls.Add(pnlDivider)
 
-        ' Main content area - semi-transparent white
+        ' Main content area - transparent to show background image
         Dim pnlContent As New Panel()
-        pnlContent.BackColor = Color.FromArgb(245, 245, 245)
+        pnlContent.BackColor = Color.Transparent
         pnlContent.Size = New Size(900, 540)
         pnlContent.Location = New Point(0, 160)
         Me.Controls.Add(pnlContent)
@@ -182,9 +182,9 @@ Public Class FormNewHome
         AddHandler btnRegister.MouseLeave, Sub() btnRegister.BackColor = Color.FromArgb(59, 130, 246)
         pnlButtonContainer.Controls.Add(btnRegister)
 
-        ' Description box with background
+        ' Description box with semi-transparent background
         Dim pnlDescBox As New Panel()
-        pnlDescBox.BackColor = Color.FromArgb(249, 250, 251)
+        pnlDescBox.BackColor = Color.FromArgb(200, 249, 250, 251)
         pnlDescBox.BorderStyle = BorderStyle.None
         pnlDescBox.Size = New Size(800, 120)
         pnlDescBox.Location = New Point(50, 85)
