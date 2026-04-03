@@ -594,6 +594,8 @@ Public Class FormAdminDashboard
         dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
         dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
         dgvUsers.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        dgvUsers.ColumnHeadersHeight = 35
+        dgvUsers.RowTemplate.Height = 28
         pnlContent.Controls.Add(dgvUsers)
 
         dgvUsers.Columns.Add("UserId", "User ID")
@@ -668,6 +670,8 @@ Public Class FormAdminDashboard
         dgvFeedback.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(15, 23, 42)
         dgvFeedback.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
         dgvFeedback.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        dgvFeedback.ColumnHeadersHeight = 35
+        dgvFeedback.RowTemplate.Height = 28
         pnlContent.Controls.Add(dgvFeedback)
 
         dgvFeedback.Columns.Add("FeedbackId", "Feedback ID")
@@ -706,6 +710,47 @@ Public Class FormAdminDashboard
                     row.DefaultCellStyle.ForeColor = Color.FromArgb(120, 85, 0)
                     row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
             End Select
+        Next
+    End Sub
+
+    Private Sub ColorizeUsersRows()
+        ' Color rows based on user activity status
+        For Each row As DataGridViewRow In dgvUsers.Rows
+            Dim status As String = row.Cells("Status").Value.ToString()
+
+            Select Case status
+                Case "Active"
+                    ' Green background for active users
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(200, 240, 220)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 100, 50)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+
+                Case "Inactive"
+                    ' Light gray background for inactive users
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(220, 220, 220)
+                    row.DefaultCellStyle.ForeColor = Color.FromArgb(80, 80, 80)
+                    row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
+            End Select
+        Next
+    End Sub
+
+    Private Sub ColorizeFeedbackRows()
+        ' Apply gradient color scheme to feedback rows based on rating
+        Dim rowCount As Integer = dgvFeedback.Rows.Count
+
+        For i As Integer = 0 To rowCount - 1
+            Dim row As DataGridViewRow = dgvFeedback.Rows(i)
+            Dim rating As String = row.Cells("Rating").Value.ToString()
+
+            ' Create gradient based on rating (5 stars = brightest green, fewer stars = less bright)
+            Dim starCount As Integer = rating.Split("⭐"c).Length - 2
+            Dim blueValue As Integer = 100 + (starCount * 30)
+            Dim greenValue As Integer = 170 + (starCount * 14)
+            Dim redValue As Integer = 200 + (starCount * 8)
+
+            row.DefaultCellStyle.BackColor = Color.FromArgb(redValue, greenValue, blueValue)
+            row.DefaultCellStyle.ForeColor = Color.FromArgb(15, 50, 80)
+            row.DefaultCellStyle.Font = New Font("Segoe UI", 9, FontStyle.Bold)
         Next
     End Sub
 
@@ -930,6 +975,8 @@ Public Class FormAdminDashboard
         For i As Integer = 0 To UBound(userData, 1)
             dgvUsers.Rows.Add(userData(i, 0), userData(i, 1), userData(i, 2), userData(i, 3), userData(i, 4), userData(i, 5), userData(i, 6))
         Next
+
+        ColorizeUsersRows()
     End Sub
 
     Private Sub LoadDummyQueriesData()
@@ -970,5 +1017,7 @@ Public Class FormAdminDashboard
         For i As Integer = 0 To UBound(feedbackData, 1)
             dgvFeedback.Rows.Add(feedbackData(i, 0), feedbackData(i, 1), feedbackData(i, 2), feedbackData(i, 3), feedbackData(i, 4), feedbackData(i, 5))
         Next
+
+        ColorizeFeedbackRows()
     End Sub
 End Class
