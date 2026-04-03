@@ -29,7 +29,20 @@ Public Class FormNewHome
                 "D:\Coding Projects\VB net\CredShield\background.jpg"
             }
 
-            For Each imagePath In possiblePaths
+            ' Also try the project root directly
+            Dim projectRoot As String = System.IO.Directory.GetParent(System.IO.Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName).FullName
+            Dim additionalPaths As String() = {
+                System.IO.Path.Combine(projectRoot, "background.jpg"),
+                System.IO.Path.Combine(projectRoot, "CredShield", "background.jpg"),
+                System.IO.Path.Combine(projectRoot, "background.png"),
+                System.IO.Path.Combine(projectRoot, "CredShield", "background.png")
+            }
+
+            ' Combine all paths
+            Dim allPaths As New List(Of String)(possiblePaths)
+            allPaths.AddRange(additionalPaths)
+
+            For Each imagePath In allPaths
                 If System.IO.File.Exists(imagePath) Then
                     bgImage = Image.FromFile(imagePath)
                     Exit For
