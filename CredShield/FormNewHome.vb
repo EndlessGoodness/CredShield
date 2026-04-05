@@ -2,7 +2,7 @@ Public Class FormNewHome
     Inherits Form
 
     Private bgImage As Image
-    Private bgOpacity As Single = 0.3F
+    Private bgOpacity As Single = 0.2F
 
     Public Sub New()
         MyBase.New()
@@ -106,9 +106,9 @@ Public Class FormNewHome
         pnlDivider.Location = New Point(0, 159)
         Me.Controls.Add(pnlDivider)
 
-        ' Main content area - semi-transparent dark overlay over background
+        ' Main content area - transparent to show background
         Dim pnlContent As New Panel()
-        pnlContent.BackColor = Color.FromArgb(220, 30, 30, 50)
+        pnlContent.BackColor = Color.Transparent
         pnlContent.Size = New Size(900, 540)
         pnlContent.Location = New Point(0, 160)
         Me.Controls.Add(pnlContent)
@@ -117,22 +117,24 @@ Public Class FormNewHome
         Dim lblSubtitle As New Label()
         lblSubtitle.Text = "Your One-Stop Financial Solution"
         lblSubtitle.Font = New Font("Segoe UI", 14, FontStyle.Regular)
-        lblSubtitle.ForeColor = Color.FromArgb(220, 220, 220)
+        lblSubtitle.ForeColor = Color.White
+        lblSubtitle.BackColor = Color.FromArgb(100, 0, 0, 0)
         lblSubtitle.AutoSize = False
         lblSubtitle.TextAlign = ContentAlignment.MiddleCenter
-        lblSubtitle.Location = New Point(0, 25)
-        lblSubtitle.Size = New Size(900, 30)
+        lblSubtitle.Location = New Point(0, 20)
+        lblSubtitle.Size = New Size(900, 40)
         pnlContent.Controls.Add(lblSubtitle)
 
         ' Subtitle description
         Dim lblSubtitleDesc As New Label()
         lblSubtitleDesc.Text = "Bridging the gap between financial consultants and clients through integrated digital solutions"
         lblSubtitleDesc.Font = New Font("Segoe UI", 9)
-        lblSubtitleDesc.ForeColor = Color.FromArgb(180, 180, 180)
+        lblSubtitleDesc.ForeColor = Color.FromArgb(200, 200, 200)
+        lblSubtitleDesc.BackColor = Color.FromArgb(80, 0, 0, 0)
         lblSubtitleDesc.AutoSize = False
         lblSubtitleDesc.TextAlign = ContentAlignment.MiddleCenter
-        lblSubtitleDesc.Location = New Point(50, 55)
-        lblSubtitleDesc.Size = New Size(800, 20)
+        lblSubtitleDesc.Location = New Point(50, 60)
+        lblSubtitleDesc.Size = New Size(800, 25)
         pnlContent.Controls.Add(lblSubtitleDesc)
 
         ' Container for buttons - moved below description
@@ -182,19 +184,20 @@ Public Class FormNewHome
         AddHandler btnRegister.MouseLeave, Sub() btnRegister.BackColor = Color.FromArgb(59, 130, 246)
         pnlButtonContainer.Controls.Add(btnRegister)
 
-        ' Description box with darker opaque background
+        ' Description box with semi-transparent dark background
         Dim pnlDescBox As New Panel()
-        pnlDescBox.BackColor = Color.FromArgb(240, 45, 45, 65)
+        pnlDescBox.BackColor = Color.FromArgb(120, 0, 0, 0)
         pnlDescBox.BorderStyle = BorderStyle.None
         pnlDescBox.Size = New Size(800, 120)
-        pnlDescBox.Location = New Point(50, 85)
+        pnlDescBox.Location = New Point(50, 95)
         pnlContent.Controls.Add(pnlDescBox)
 
         ' Description text
         Dim lblDescription As New Label()
-        lblDescription.Text = "GEE Associates identified a critical need for a centralized digital platform that could unify all financial services under a single system. This realization led to the conceptualization of CredShield, a comprehensive solution aimed at bridging the gap between financial consultants and their clients." & vbCrLf & vbCrLf & "Enabling users to access multiple financial services through a single platform. By integrating various functionalities into one system, it eliminates redundancy, enhances efficiency, and provides a seamless user experience. The platform not only simplifies service access but also ensures better data management and communication between clients and administrators."
+        lblDescription.Text = "GEE Associates identified a critical need for a centralized digital platform that could unify all financial services under a single system. This realization led to the conceptualization of CredShield, a comprehensive solution aimed at bridging the gap between financial consultants and their clients." & vbCrLf & vbCrLf & "Enabling users to access multiple financial services through a single platform. By integrating various functionalities into one system, it eliminates redundancy, enhances efficiency, and provides a seamless user experience."
         lblDescription.Font = New Font("Segoe UI", 10)
-        lblDescription.ForeColor = Color.FromArgb(220, 220, 220)
+        lblDescription.ForeColor = Color.White
+        lblDescription.BackColor = Color.Transparent
         lblDescription.AutoSize = False
         lblDescription.TextAlign = ContentAlignment.TopLeft
         lblDescription.Location = New Point(10, 10)
@@ -206,17 +209,19 @@ Public Class FormNewHome
         lblFeaturesTitle.Text = "Why Choose CredShield?"
         lblFeaturesTitle.Font = New Font("Segoe UI", 11, FontStyle.Bold)
         lblFeaturesTitle.ForeColor = Color.FromArgb(34, 197, 94)
+        lblFeaturesTitle.BackColor = Color.FromArgb(60, 0, 0, 0)
         lblFeaturesTitle.AutoSize = False
         lblFeaturesTitle.TextAlign = ContentAlignment.MiddleCenter
-        lblFeaturesTitle.Location = New Point(0, 410)
-        lblFeaturesTitle.Size = New Size(900, 25)
+        lblFeaturesTitle.Location = New Point(0, 405)
+        lblFeaturesTitle.Size = New Size(900, 30)
         pnlContent.Controls.Add(lblFeaturesTitle)
 
         ' Features text
         Dim lblFeatures As New Label()
         lblFeatures.Text = "✓ Centralized Platform  •  ✓ Eliminate Redundancy  •  ✓ Enhanced Efficiency  •  ✓ Seamless Integration"
         lblFeatures.Font = New Font("Segoe UI", 9)
-        lblFeatures.ForeColor = Color.FromArgb(180, 180, 180)
+        lblFeatures.ForeColor = Color.FromArgb(200, 200, 200)
+        lblFeatures.BackColor = Color.FromArgb(60, 0, 0, 0)
         lblFeatures.AutoSize = False
         lblFeatures.TextAlign = ContentAlignment.MiddleCenter
         lblFeatures.Location = New Point(50, 435)
@@ -227,10 +232,11 @@ Public Class FormNewHome
         Dim lblFooter As New Label()
         lblFooter.Text = "© 2026 CredShield by GEE ASSOCIATES  |  Loans, Taxes & Financial Services"
         lblFooter.Font = New Font("Segoe UI", 8)
-        lblFooter.ForeColor = Color.FromArgb(120, 120, 120)
+        lblFooter.ForeColor = Color.FromArgb(150, 150, 150)
+        lblFooter.BackColor = Color.FromArgb(60, 0, 0, 0)
         lblFooter.AutoSize = False
         lblFooter.TextAlign = ContentAlignment.MiddleCenter
-        lblFooter.Location = New Point(0, 505)
+        lblFooter.Location = New Point(0, 500)
         lblFooter.Size = New Size(900, 40)
         pnlContent.Controls.Add(lblFooter)
     End Sub

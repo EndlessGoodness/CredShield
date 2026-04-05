@@ -47,6 +47,27 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>CredShield.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>CredShield.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -58,6 +79,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -73,51 +95,21 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessDatabaseHelper.vb" />
     <Compile Include="DatabaseConnection.vb" />
-    <Compile Include="Form1.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form2.Designer.vb">
-      <DependentUpon>Form2.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form2.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form3.Designer.vb">
-      <DependentUpon>Form3.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form3.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form4.Designer.vb">
-      <DependentUpon>Form4.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form4.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form5.Designer.vb">
-      <DependentUpon>Form5.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form5.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form6.Designer.vb">
-      <DependentUpon>Form6.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form6.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="FormAdminDashboard.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormAdminLogin.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormClientHome.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormClientLogin.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLoanApplicationWithOffer.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormLoanComparison.vb">
@@ -126,13 +118,16 @@
     <Compile Include="FormLoanRegistration.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormModernHome.vb">
+    <Compile Include="FormLoanTypeComparison.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormNewHome.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRegister.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWishlist.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="LoanApplication.vb" />
@@ -155,6 +150,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Program.vb" />
+    <Compile Include="RoundedButton.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WishlistManager.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -166,13 +164,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ADMIN_PANEL_IMPROVEMENTS.md" />
-    <None Include="BEAUTIFICATION_SUMMARY.md" />
-    <None Include="DEPLOYMENT_SUMMARY.md" />
-    <None Include="GITHUB_SETUP.md" />
     <None Include="LICENSE" />
-    <None Include="LOAN_COMPARISON_FEATURE.md" />
-    <None Include="MODERN_ACKO_STYLE_DESIGN.md" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -183,15 +175,10 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-    <None Include="QUICKSTART.md" />
     <None Include="README.md" />
-    <None Include="READY_FOR_GITHUB.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="APPLICATION_DOCUMENTATION.txt" />
-    <Content Include="GITHUB_UPLOAD_COMPLETE.txt" />
-    <Content Include="UPLOAD_INSTRUCTIONS.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
